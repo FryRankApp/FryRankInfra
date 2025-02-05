@@ -1,2 +1,2 @@
-# fryrank-infra
+# FryRankInfra
 Terraform-defined infrastructure for FryRank
