@@ -1,3 +1,11 @@
+terraform {
+  backend "s3" {
+    bucket = "fryrank-terraform-state-bucket"
+    key    = "ecr/terraform.tfstate"
+    region = "us-west-2"
+  }
+}
+
 provider "aws" {
   region = local.region
 }
