@@ -7,7 +7,7 @@ env:
   TF_CLOUD_ORGANIZATION: "fryrank"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "github-actions"
-  CONFIG_DIRECTORY: "./"
+  CONFIG_DIRECTORY: "./stack"
 
 jobs:
   terraform:
