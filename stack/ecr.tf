@@ -1,17 +1,4 @@
-terraform {
-  backend "s3" {
-    bucket = "fryrank-terraform-state-bucket"
-    key    = "ecr/terraform.tfstate"
-    region = "us-west-2"
-  }
-}
-
-provider "aws" {
-  region = local.region
-}
-
 locals {
-  region = "us-west-2"
   name   = "fryrank-app"
 
   account_id = data.aws_caller_identity.current.account_id
