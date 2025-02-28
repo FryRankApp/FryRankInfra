@@ -65,16 +65,7 @@ module "ecs_service" {
 
       readonly_root_filesystem = true
 
-      enable_cloudwatch_logging = true
-      log_configuration = {
-        logDriver = "awsfirelens"
-        options = {
-          Name                    = "firehose"
-          region                  = local.region
-          delivery_stream         = "fryrank-backend-stream"
-          log-driver-buffer-limit = "2097152"
-        }
-      }
+      enable_cloudwatch_logging = false
 
       linux_parameters = {
         capabilities = {
