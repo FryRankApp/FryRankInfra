@@ -1,20 +1,11 @@
 data "aws_availability_zones" "available" {}
 
 locals {
-  region = "us-west-2"
-  name   = "fryrank-stage"
-
   vpc_cidr = "10.0.0.0/16"
   azs      = slice(data.aws_availability_zones.available.names, 0, 3)
 
   container_name = "fryrank-backend"
   container_port = 8080
-
-  tags = {
-    Name       = local.name
-    Example    = local.name
-    Repository = "https://github.com/NickPriv/FryRankInfra"
-  }
 }
 
 ################################################################################
@@ -62,7 +53,7 @@ module "ecs_service" {
       cpu       = 1024
       memory    = 2048
       essential = true
-      image     = "public.ecr.aws/aws-containers/ecsdemo-frontend:776fd50" // TODO https://docs.aws.amazon.com/AmazonECR/latest/userguide/docker-push-ecr-image.html
+      image     = "390844755099.dkr.ecr.us-west-2.amazonaws.com/fryrank-app:latest"
       port_mappings = [
         {
           name          = local.container_name
@@ -218,6 +209,8 @@ module "alb" {
       create_attachment = false
     }
   }
+
+  client_keep_alive = 1800
 
   tags = local.tags
 }
