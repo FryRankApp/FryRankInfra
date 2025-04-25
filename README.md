@@ -12,7 +12,10 @@ be followed:
 4. Run `teraform apply`
 
 ## How to Run Terraform
-1. Run `terraform init` to initialize the Terraform configuration.
-2. Run `terraform get` to download the necessary modules after a new module is added.
-3. Run `terraform plan` to see what changes will be made.
-4. After the code is merged, `terraform apply` will automatically be run to apply the changes.
+1. Obtain AWS access key and secret access key for development from vault. Export `AWS_ACCESS_KEY_ID` and
+`AWS_SECRET_ACCESS_KEY` respectively. This will allow your local instance of terraform to access
+existing FryRank infrastructure.
+2. Run `terraform init` to initialize the Terraform configuration.
+3. Run `terraform get` to download the necessary modules after a new module is added.
+4. Run `terraform plan` to see what changes will be made.
+5. After the code is merged, `terraform apply` will automatically be run to apply the changes.
