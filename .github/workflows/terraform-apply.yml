@@ -6,11 +6,10 @@ on:
       - main
 
 env:
-  TF_CLOUD_ORGANIZATION: "fryrank"
-  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
-  TF_WORKSPACE: "github-actions-v2"
-  CONFIG_DIRECTORY: "./stack"
+  TF_ACTIONS_WORKING_DIR: "./stack"
 
+permissions:
+  pull-requests: write
 
 jobs:
   terraform:
@@ -21,27 +20,19 @@ jobs:
       # so GitHub can check out this repo using the default github.token
       contents: read
     steps:
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
 
-      - name: Upload Configuration
-        uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.0.0
-        id: apply-upload
+      - name: "Configure AWS credentials"
+        uses: aws-actions/configure-aws-credentials@v4
         with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          directory: ${{ env.CONFIG_DIRECTORY }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Create Apply Run
-        uses: hashicorp/tfc-workflows-github/actions/create-run@v1.0.0
-        id: apply-run
-        with:
-          workspace: ${{ env.TF_WORKSPACE }}
-          configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
+      - name: "Terraform Init"
+        run: "terraform init"
 
-      - name: Apply
-        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
-        if: fromJSON(steps.apply-run.outputs.payload).data.attributes.actions.IsConfirmable
-        id: apply
-        with:
-          run: ${{ steps.apply-run.outputs.run_id }}
-          comment: "Apply Run from GitHub Actions CI ${{ github.sha }}"
+      - name: "Terraform Apply"
+        if: github.ref == 'refs/heads/"main"' && github.event_name == 'push'
+        run: terraform apply -auto-approve -input=false
