@@ -9,6 +9,6 @@ locals {
   tags = {
     Name       = local.name
     Example    = local.name
-    Repository = "https://github.com/NickPriv/FryRankInfra"
+    Repository = "https://github.com/FryRankApp/FryRankInfra"
   }
 }
