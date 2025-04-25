@@ -13,7 +13,9 @@ permissions:
 
 jobs:
   terraform:
-    if: github.repository != 'hashicorp-education/learn-terraform-github-actions'
+    defaults:
+      run:
+        working-directory: ${{ env.TF_ACTIONS_WORKING_DIR }}
     name: "Terraform Apply"
     runs-on: ubuntu-latest
     permissions: # granular permissions
