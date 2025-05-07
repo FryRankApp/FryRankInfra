@@ -66,6 +66,7 @@ resource "aws_codebuild_project" "lambda_build" {
 
   environment {
     compute_type                = "BUILD_LAMBDA_1GB"
+    image                       = "aws/codebuild/amazonlinux2-x86_64-standard:4.0"
     type                        = "LINUX_LAMBDA_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
   }
