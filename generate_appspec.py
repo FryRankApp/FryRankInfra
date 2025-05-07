@@ -2,10 +2,23 @@ import json
 import os
 import boto3
 import yaml
+import hcl2
+
+def load_lambda_functions():
+    with open('stack/lambda.tf', 'r') as f:
+        tf_config = hcl2.load(f)
+        # Extract lambda_functions from locals block
+        if 'locals' in tf_config:
+            locals_blocks = tf_config['locals']
+            if isinstance(locals_blocks, list) and len(locals_blocks) > 0:
+                locals_block = locals_blocks[0]  # Get the first locals block
+                if 'lambda_functions' in locals_block:
+                    return locals_block['lambda_functions']
+    return {}
 
 def generate_appspec():
     lambda_client = boto3.client('lambda')
-    lambda_functions = json.loads(os.environ.get('LAMBDA_FUNCTIONS', '{}'))
+    lambda_functions = load_lambda_functions()
     
     # Create resources list for all functions
     resources = []

@@ -1,34 +1,12 @@
 import os
 import json
 import yaml
-import hcl2
 import sys
 from unittest.mock import patch, MagicMock
 
 # Add parent directory to Python path to import generate_appspec
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from generate_appspec import generate_appspec
-
-def load_lambda_functions():
-    print("Loading lambda.tf file...")
-    # Get the project root directory
-    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    lambda_tf_path = os.path.join(project_root, 'stack', 'lambda.tf')
-    
-    with open(lambda_tf_path, 'r') as f:
-        tf_config = hcl2.load(f)
-        print(f"Parsed HCL config: {json.dumps(tf_config, indent=2)}")
-        # Extract lambda_functions from locals block
-        if 'locals' in tf_config:
-            locals_blocks = tf_config['locals']
-            if isinstance(locals_blocks, list) and len(locals_blocks) > 0:
-                locals_block = locals_blocks[0]  # Get the first locals block
-                if 'lambda_functions' in locals_block:
-                    functions = locals_block['lambda_functions']
-                    print(f"Found lambda functions: {json.dumps(functions, indent=2)}")
-                    return functions
-    print("No lambda functions found in config!")
-    return {}
+from generate_appspec import generate_appspec, load_lambda_functions
 
 def validate_appspec():
     print("\nValidating appspec.yml...")
@@ -89,11 +67,6 @@ def validate_appspec():
     print("---")
 
 def main():
-    # Load Lambda functions from lambda.tf
-    lambda_functions = load_lambda_functions()
-    os.environ['LAMBDA_FUNCTIONS'] = json.dumps(lambda_functions)
-    
-    # Generate and validate appspec
     validate_appspec()
 
 if __name__ == '__main__':
