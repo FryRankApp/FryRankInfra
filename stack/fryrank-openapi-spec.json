@@ -331,12 +331,12 @@
         }
       }
     },
-    "/api/reviews/top": {
+    "/api/reviews/recent": {
       "get": {
         "tags": [
           "review-controller"
         ],
-        "operationId": "getTopReviews",
+        "operationId": "getRecentReviews",
         "parameters": [
           {
             "name": "count",
