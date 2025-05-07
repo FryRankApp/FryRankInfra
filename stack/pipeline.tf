@@ -132,7 +132,6 @@ resource "aws_codepipeline" "fryrank_lambda_pipeline" {
         provider       = "Lambda"
         input_artifacts = ["build_output"]
         version        = "1"
-        run_order      = index(keys(local.lambda_functions), action.key) + 1
 
         configuration = {
           FunctionName = action.value.name
