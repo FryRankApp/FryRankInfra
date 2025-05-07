@@ -1,0 +1,20 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto21
+  
+  build:
+    commands:
+      - echo Build started on `date`
+      - ./gradlew build
+      
+  post_build:
+    commands:
+      - echo Build completed on `date`
+
+artifacts:
+  files:
+    - build/distributions/FryRankLambda.zip
+  discard-paths: yes
