@@ -6,7 +6,7 @@ from unittest.mock import patch, MagicMock
 
 # Add parent directory to Python path to import generate_appspec
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from generate_appspec import generate_appspec, load_lambda_functions
+from build.generate_appspec import generate_appspec, load_lambda_functions
 
 def validate_appspec():
     print("\nValidating appspec.yml...")

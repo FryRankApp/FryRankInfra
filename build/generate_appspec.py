@@ -5,7 +5,11 @@ import yaml
 import hcl2
 
 def load_lambda_functions():
-    with open('stack/lambda.tf', 'r') as f:
+    # Get the project root directory (one level up from build directory)
+    project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    lambda_tf_path = os.path.join(project_root, 'stack', 'lambda.tf')
+    
+    with open(lambda_tf_path, 'r') as f:
         tf_config = hcl2.load(f)
         # Extract lambda_functions from locals block
         if 'locals' in tf_config:

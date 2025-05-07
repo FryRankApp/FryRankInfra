@@ -14,7 +14,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - pip install boto3 pyyaml python-hcl2
-      - python3 generate_appspec.py
+      - python3 build/generate_appspec.py
 
 artifacts:
   files:
