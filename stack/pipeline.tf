@@ -129,12 +129,13 @@ resource "aws_codepipeline" "fryrank_lambda_pipeline" {
         name            = "Deploy-${action.value.name}"
         category        = "Deploy"
         owner          = "AWS"
-        provider       = "Lambda"
+        provider       = "CodeDeploy"
         input_artifacts = ["build_output"]
         version        = "1"
 
         configuration = {
-          FunctionName = action.value.name
+          ApplicationName = aws_codedeploy_app.lambda_codedeploy_app.name
+          DeploymentGroupName = aws_codedeploy_deployment_group.lambda_deployment_groups[action.key].deployment_group_name
         }
       }
     }
