@@ -13,8 +13,11 @@ phases:
   post_build:
     commands:
       - echo Build completed on `date`
+      - pip install boto3 pyyaml python-hcl2
+      - python3 build/generate_appspec.py
 
 artifacts:
   files:
+    - appspec.yml
     - build/distributions/FryRankLambda.zip
   discard-paths: yes

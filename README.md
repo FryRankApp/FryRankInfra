@@ -24,3 +24,10 @@ existing FryRank infrastructure.
 3. Run `terraform get` to download the necessary modules after a new module is added.
 4. Run `terraform plan` to see what changes will be made.
 5. After the code is merged, `terraform apply` will automatically be run to apply the changes.
+
+## Testing AppSpec Generation (for Lambda Deployment)
+To test the OpenAPI specification generation for API Gateway:
+
+1. Navigate to the `/test` directory
+2. Run `python test_generate_appspec.py` to generate and validate the OpenAPI specification
+3. The script will generate a new OpenAPI specification file
