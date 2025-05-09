@@ -73,7 +73,11 @@ resource "aws_codebuild_project" "lambda_build" {
 
   source {
     type      = "CODEPIPELINE"
+<<<<<<< HEAD
     buildspec = "build/buildspec.yml"
+=======
+    buildspec = "../build/buildspec.yml"
+>>>>>>> main
   }
 
   tags = local.tags
