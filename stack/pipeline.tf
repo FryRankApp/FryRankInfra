@@ -150,6 +150,3 @@ resource "aws_codepipeline" "fryrank_lambda_pipeline" {
 
   tags = local.tags
 }
-
-# Get current AWS account ID
-data "aws_caller_identity" "current" {}
