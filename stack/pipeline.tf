@@ -72,16 +72,9 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
       {
         Effect = "Allow"
         Action = [
-          "codedeploy:CreateDeployment",
-          "codedeploy:GetDeployment",
-          "codedeploy:GetDeploymentConfig",
-          "codedeploy:GetApplicationRevision",
-          "codedeploy:RegisterApplicationRevision"
+          "codedeploy:*"
         ]
-        Resource = [
-          aws_codedeploy_app.lambda_codedeploy_app.arn,
-          "${aws_codedeploy_app.lambda_codedeploy_app.arn}/*"
-        ]
+        Resource = "*"
       }
     ]
   })
@@ -157,3 +150,6 @@ resource "aws_codepipeline" "fryrank_lambda_pipeline" {
 
   tags = local.tags
 }
+
+# Get current AWS account ID
+data "aws_caller_identity" "current" {}
