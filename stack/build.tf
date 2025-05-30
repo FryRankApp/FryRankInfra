@@ -52,7 +52,6 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Resource = [
           module.fryrank_lambda_function_bucket.s3_bucket_arn,
           "${module.fryrank_lambda_function_bucket.s3_bucket_arn}/*"
-          
         ]
       },
       {
@@ -69,18 +68,8 @@ resource "aws_iam_role_policy" "codebuild_policy" {
       {
         Effect = "Allow"
         Action = [
-          "s3:GetObject",
-          "s3:GetObjectVersion"
-        ]
-        Resource = [
-          data.aws_s3_bucket.terraform_state.arn,
-          "${data.aws_s3_bucket.terraform_state.arn}/*"
-        ]
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "lambda:GetFunction"
+          "lambda:GetFunction",
+          "lambda:PublishVersion"
         ]
         Resource = "*"
       }
