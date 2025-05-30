@@ -65,6 +65,24 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           data.aws_s3_bucket.terraform_state.arn,
           "${data.aws_s3_bucket.terraform_state.arn}/*"
         ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:GetObjectVersion"
+        ]
+        Resource = [
+          data.aws_s3_bucket.terraform_state.arn,
+          "${data.aws_s3_bucket.terraform_state.arn}/*"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "lambda:GetFunction"
+        ]
+        Resource = "*"
       }
     ]
   })
