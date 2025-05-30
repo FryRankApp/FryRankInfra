@@ -68,6 +68,20 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "lambda:GetFunction"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "codedeploy:CreateDeployment",
+          "codedeploy:GetDeployment",
+          "codedeploy:GetDeploymentConfig",
+          "codedeploy:GetApplicationRevision",
+          "codedeploy:RegisterApplicationRevision"
+        ]
+        Resource = [
+          aws_codedeploy_app.lambda_codedeploy_app.arn,
+          "${aws_codedeploy_app.lambda_codedeploy_app.arn}/*"
+        ]
       }
     ]
   })
