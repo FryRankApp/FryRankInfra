@@ -20,6 +20,18 @@ resource "aws_api_gateway_deployment" "fryrank_api" {
   }
 }
 
+resource "aws_api_gateway_deployment" "fryrank_api_deployment" {
+  rest_api_id = aws_api_gateway_rest_api.fryrank_api.id
+
+  triggers = {
+    redeployment = sha1(jsonencode(aws_api_gateway_rest_api.fryrank_api.body))
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
 resource "aws_api_gateway_stage" "fryrank_api" {
   deployment_id = aws_api_gateway_deployment.fryrank_api.id
   rest_api_id   = aws_api_gateway_rest_api.fryrank_api.id
