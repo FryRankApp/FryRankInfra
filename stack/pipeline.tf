@@ -143,25 +143,6 @@ resource "aws_codepipeline" "fryrank_lambda_pipeline" {
         configuration = {
           ApplicationName = aws_codedeploy_app.lambda_codedeploy_app.name
           DeploymentGroupName = aws_codedeploy_deployment_group.lambda_deployment_groups[action.key].deployment_group_name
-          Revision = jsonencode({
-            RevisionType = "AppSpecContent"
-            AppSpecContent = {
-              Content = jsonencode({
-                version = "0.0"
-                Resources = [{
-                  (action.value.name) = {
-                    Type = "AWS::Lambda::Function"
-                    Properties = {
-                      Name = action.value.name
-                      Alias = "Production"
-                      CurrentVersion = "$LATEST"
-                      TargetVersion = "$LATEST"
-                    }
-                  }
-                }]
-              })
-            }
-          })
         }
       }
     }
