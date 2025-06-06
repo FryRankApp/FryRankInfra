@@ -130,20 +130,17 @@ resource "aws_codepipeline" "fryrank_lambda_pipeline" {
   stage {
     name = "Deploy"
 
-    dynamic "action" {
-      for_each = local.lambda_functions
-      content {
-        name            = "Deploy-${action.value.name}"
-        category        = "Deploy"
-        owner          = "AWS"
-        provider       = "CodeDeploy"
-        input_artifacts = ["build_output"]
-        version        = "1"
+    action {
+      name            = "Deploy"
+      category        = "Deploy"
+      owner          = "AWS"
+      provider       = "CodeDeploy"
+      input_artifacts = ["build_output"]
+      version        = "1"
 
-        configuration = {
-          ApplicationName = aws_codedeploy_app.lambda_codedeploy_app.name
-          DeploymentGroupName = aws_codedeploy_deployment_group.lambda_deployment_groups[action.key].deployment_group_name
-        }
+      configuration = {
+        ApplicationName = aws_codedeploy_app.lambda_codedeploy_app.name
+        DeploymentGroupName = aws_codedeploy_deployment_group.lambda_deployment_group.deployment_group_name
       }
     }
   }
