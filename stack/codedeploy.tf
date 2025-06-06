@@ -50,7 +50,9 @@ resource "aws_iam_role_policy" "codedeploy_s3_policy" {
 }
 
 # Create deployment groups for each Lambda function
-resource "aws_codedeploy_deployment_group" "lambda_deployment_group" {
+resource "aws_codedeploy_deployment_group" "lambda_deployment_groups" {
+  for_each = local.lambda_functions
+
   app_name               = aws_codedeploy_app.lambda_codedeploy_app.name
   deployment_group_name  = "${local.name}-${each.value.name}-deployment-group"
   deployment_config_name = "CodeDeployDefault.LambdaAllAtOnce"
@@ -59,5 +61,14 @@ resource "aws_codedeploy_deployment_group" "lambda_deployment_group" {
   deployment_style {
     deployment_option = "WITH_TRAFFIC_CONTROL"
     deployment_type   = "BLUE_GREEN"
+  }
+
+  auto_rollback_configuration {
+    enabled = true
+    events  = ["DEPLOYMENT_FAILURE"]
+  }
+
+  alarm_configuration {
+    enabled = false
   }
 }
