@@ -50,9 +50,7 @@ resource "aws_iam_role_policy" "codedeploy_s3_policy" {
 }
 
 # Create deployment groups for each Lambda function
-resource "aws_codedeploy_deployment_group" "lambda_deployment_groups" {
-  for_each = local.lambda_functions
-
+resource "aws_codedeploy_deployment_group" "lambda_deployment_group" {
   app_name               = aws_codedeploy_app.lambda_codedeploy_app.name
   deployment_group_name  = "${local.name}-${each.value.name}-deployment-group"
   deployment_config_name = "CodeDeployDefault.LambdaAllAtOnce"
