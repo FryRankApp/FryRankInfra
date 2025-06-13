@@ -109,51 +109,20 @@ resource "aws_codepipeline" "fryrank_lambda_pipeline" {
     }
   }
 
-  # Build and Deploy stages for each Lambda function
-  dynamic "stage" {
-    for_each = local.lambda_functions
-    content {
-      name = "Build-${stage.value.name}"
+  stage {
+    name = "Build"
 
-      action {
-        name             = "Build"
-        category         = "Build"
-        owner           = "AWS"
-        provider        = "CodeBuild"
-        version         = "1"
-        input_artifacts  = ["source_output"]
-        output_artifacts = ["build_output_${stage.key}"]
+    action {
+      name             = "Build"
+      category         = "Build"
+      owner           = "AWS"
+      provider        = "CodeBuild"
+      version         = "1"
+      input_artifacts  = ["source_output"]
+      output_artifacts = ["build_output"]
 
-        configuration = {
-          ProjectName = aws_codebuild_project.lambda_build.name
-          EnvironmentVariables = jsonencode([
-            {
-              name  = "LAMBDA_FUNCTION"
-              value = stage.value.name
-            }
-          ])
-        }
-      }
-    }
-  }
-
-  dynamic "stage" {
-    for_each = local.lambda_functions
-    content {
-      name = "Deploy-${stage.value.name}"
-
-      action {
-        name            = "Deploy"
-        category        = "Deploy"
-        owner          = "AWS"
-        provider       = "CodeDeploy"
-        input_artifacts = ["build_output_${stage.key}"]
-        version        = "1"
-
-        configuration = {
-          ApplicationName = aws_codedeploy_app.lambda_codedeploy_app.name
-          DeploymentGroupName = aws_codedeploy_deployment_group.lambda_deployment_groups[stage.key].deployment_group_name
-        }
+      configuration = {
+        ProjectName = aws_codebuild_project.lambda_build.name
       }
     }
   }
