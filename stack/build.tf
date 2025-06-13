@@ -69,7 +69,8 @@ resource "aws_iam_role_policy" "codebuild_policy" {
         Effect = "Allow"
         Action = [
           "lambda:GetFunction",
-          "lambda:PublishVersion"
+          "lambda:PublishVersion",
+          "lambda:UpdateFunctionCode"
         ]
         Resource = "*"
       }
