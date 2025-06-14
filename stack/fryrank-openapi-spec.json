@@ -12,52 +12,6 @@
   ],
   "paths": {
     "/api/userMetadata": {
-      "options": {
-        "summary": "CORS support",
-        "description": "Enable CORS by returning correct headers",
-        "tags": [
-          "CORS"
-        ],
-        "responses": {
-          "200": {
-            "description": "Default response for CORS method",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\n \"statusCode\": 200\n}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,PUT,POST,OPTIONS'",
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
-        }
-      },
       "get": {
         "tags": [
           "user-metadata-controller"
@@ -102,13 +56,6 @@
           },
           "200": {
             "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -122,14 +69,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getPublicUserMetadata/invocations",
-          "responses": {
-            "default": {
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getPublicUserMetadata/invocations"
         }
       },
       "put": {
@@ -184,13 +124,6 @@
           },
           "200": {
             "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -204,14 +137,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:putPublicUserMetadata/invocations",
-          "responses": {
-            "default": {
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:putPublicUserMetadata/invocations"
         }
       },
       "post": {
@@ -258,13 +184,6 @@
           },
           "200": {
             "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -278,64 +197,11 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:upsertPublicUserMetadata/invocations",
-          "responses": {
-            "default": {
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:upsertPublicUserMetadata/invocations"
         }
       }
     },
     "/api/reviews": {
-      "options": {
-        "summary": "CORS support",
-        "description": "Enable CORS by returning correct headers",
-        "tags": [
-          "CORS"
-        ],
-        "responses": {
-          "200": {
-            "description": "Default response for CORS method",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\n \"statusCode\": 200\n}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
-        }
-      },
       "get": {
         "tags": [
           "review-controller"
@@ -388,13 +254,6 @@
           },
           "200": {
             "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -408,14 +267,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getAllReviews/invocations",
-          "responses": {
-            "default": {
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getAllReviews/invocations"
         }
       },
       "post": {
@@ -462,13 +314,6 @@
           },
           "200": {
             "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -482,64 +327,11 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:addNewReview/invocations",
-          "responses": {
-            "default": {
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:addNewReview/invocations"
         }
       }
     },
     "/api/reviews/recent": {
-      "options": {
-        "summary": "CORS support",
-        "description": "Enable CORS by returning correct headers",
-        "tags": [
-          "CORS"
-        ],
-        "responses": {
-          "200": {
-            "description": "Default response for CORS method",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\n \"statusCode\": 200\n}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
-        }
-      },
       "get": {
         "tags": [
           "review-controller"
@@ -585,13 +377,6 @@
           },
           "200": {
             "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -605,64 +390,11 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getRecentReviews/invocations",
-          "responses": {
-            "default": {
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getRecentReviews/invocations"
         }
       }
     },
     "/api/reviews/aggregateInformation": {
-      "options": {
-        "summary": "CORS support",
-        "description": "Enable CORS by returning correct headers",
-        "tags": [
-          "CORS"
-        ],
-        "responses": {
-          "200": {
-            "description": "Default response for CORS method",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Methods": {
-                "schema": {
-                  "type": "string"
-                }
-              },
-              "Access-Control-Allow-Headers": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
-            "content": {}
-          }
-        },
-        "x-amazon-apigateway-integration": {
-          "type": "mock",
-          "requestTemplates": {
-            "application/json": "{\n \"statusCode\": 200\n}"
-          },
-          "responses": {
-            "default": {
-              "statusCode": "200",
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
-        }
-      },
       "get": {
         "tags": [
           "review-controller"
@@ -716,13 +448,6 @@
           },
           "200": {
             "description": "OK",
-            "headers": {
-              "Access-Control-Allow-Origin": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            },
             "content": {
               "application/json": {
                 "schema": {
@@ -736,14 +461,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getAggregateReviewInformation/invocations",
-          "responses": {
-            "default": {
-              "responseParameters": {
-                "method.response.header.Access-Control-Allow-Origin": "'*'"
-              }
-            }
-          }
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getAggregateReviewInformation/invocations"
         }
       }
     }
