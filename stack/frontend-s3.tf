@@ -10,19 +10,36 @@ resource "aws_s3_bucket" "log_bucket" {
   tags   = local.tags
 }
 
-# Block public access to the log bucket
+# Configure bucket ownership controls to allow ACLs
+resource "aws_s3_bucket_ownership_controls" "log_bucket" {
+  bucket = aws_s3_bucket.log_bucket.id
+
+  rule {
+    object_ownership = "BucketOwnerPreferred"
+  }
+}
+
+# Configure ACL for CloudFront log delivery
+resource "aws_s3_bucket_acl" "log_bucket" {
+  depends_on = [aws_s3_bucket_ownership_controls.log_bucket]
+  bucket     = aws_s3_bucket.log_bucket.id
+  acl        = "log-delivery-write"
+}
+
+# Block public access to the log bucket (allow ACLs but block public access)
 resource "aws_s3_bucket_public_access_block" "log_bucket" {
   bucket = aws_s3_bucket.log_bucket.id
 
-  block_public_acls       = true
+  block_public_acls       = false  # Allow ACLs for CloudFront logging
   block_public_policy     = true
-  ignore_public_acls      = true
+  ignore_public_acls      = false  # Don't ignore ACLs
   restrict_public_buckets = true
 }
 
 # Log bucket policy to allow CloudFront log delivery
 resource "aws_s3_bucket_policy" "log_bucket" {
-  bucket = aws_s3_bucket.log_bucket.id
+  depends_on = [aws_s3_bucket_acl.log_bucket]
+  bucket     = aws_s3_bucket.log_bucket.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -30,15 +47,17 @@ resource "aws_s3_bucket_policy" "log_bucket" {
         Sid       = "AllowCloudFrontLogDelivery"
         Effect    = "Allow"
         Principal = {
-          Service = "logging.s3.amazonaws.com"
+          AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         }
-        Action   = "s3:PutObject"
-        Resource = "${aws_s3_bucket.log_bucket.arn}/*"
-        Condition = {
-          StringEquals = {
-            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
-          }
-        }
+        Action = [
+          "s3:PutObject",
+          "s3:GetBucketAcl",
+          "s3:PutBucketAcl"
+        ]
+        Resource = [
+          aws_s3_bucket.log_bucket.arn,
+          "${aws_s3_bucket.log_bucket.arn}/*"
+        ]
       }
     ]
   })
@@ -128,4 +147,4 @@ resource "aws_s3_bucket_policy" "spa_bucket_policy" {
       }
     ]
   })
-} 
+}
