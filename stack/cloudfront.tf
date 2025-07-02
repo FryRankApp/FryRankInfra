@@ -11,7 +11,7 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  price_class         = "PriceClass_100"  # Matches CloudFormation template's PriceClass_100
+  price_class         = "PriceClass_100"
   tags                = local.tags
 
   # Configure logging
