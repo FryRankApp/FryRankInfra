@@ -132,7 +132,7 @@ resource "aws_s3_bucket_policy" "spa_bucket_policy" {
     Version = "2012-10-17"
     Statement = [
       {
-        Sid       = "AllowCloudFrontServicePrincipal"
+        Sid       = "AllowCloudFrontOAC"
         Effect    = "Allow"
         Principal = {
           Service = "cloudfront.amazonaws.com"
