@@ -1,6 +1,10 @@
-# CloudFront origin access identity
-resource "aws_cloudfront_origin_access_identity" "spa_oai" {
-  comment = "OAI for ${local.name} SPA"
+# CloudFront origin access control
+resource "aws_cloudfront_origin_access_control" "spa_oac" {
+  name                              = "${local.name}-spa-oac"
+  description                       = "OAC for ${local.name} SPA"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
 }
 
 # Get current AWS account ID
@@ -22,12 +26,9 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   }
 
   origin {
-    domain_name = aws_s3_bucket.spa_bucket.bucket_regional_domain_name
-    origin_id   = "S3Origin"  # Match CloudFormation's origin ID
-
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.spa_oai.cloudfront_access_identity_path
-    }
+    domain_name              = aws_s3_bucket.spa_bucket.bucket_regional_domain_name
+    origin_id                = "S3Origin"  # Match CloudFormation's origin ID
+    origin_access_control_id = aws_cloudfront_origin_access_control.spa_oac.id
   }
 
   default_cache_behavior {
@@ -73,4 +74,4 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
 # Output the CloudFront distribution URL
 output "spa_url" {
   value = "https://${aws_cloudfront_distribution.spa_distribution.domain_name}"
-} 
+}
