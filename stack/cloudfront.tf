@@ -1,8 +1,3 @@
-# CloudFront origin access identity
-resource "aws_cloudfront_origin_access_identity" "spa_oai" {
-  comment = "OAI for ${local.name} SPA"
-}
-
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
 
