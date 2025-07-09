@@ -144,15 +144,6 @@ resource "aws_s3_bucket_policy" "spa_bucket_policy" {
             "AWS:SourceArn" = aws_cloudfront_distribution.spa_distribution.arn
           }
         }
-      },
-      {
-        Sid = "AllowLegacyOAIReadOnly",
-        Effect = "Allow",
-        Principal = {
-          AWS = "arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity ${aws_cloudfront_origin_access_identity.spa_oai.id}"
-        },
-        Action = "s3:GetObject",
-        Resource = "${aws_s3_bucket.spa_bucket.arn}/*"
       }
     ]
   })
