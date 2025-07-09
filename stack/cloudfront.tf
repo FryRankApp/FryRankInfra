@@ -70,6 +70,14 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   }
 }
 
+resource "aws_cloudfront_origin_access_control" "spa_oac" {
+  name                              = "${local.name}-spa-oac"
+  description                       = "OAC for ${local.name} SPA"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+  origin_access_control_origin_type = "s3"
+}
+
 # Output the CloudFront distribution URL
 output "spa_url" {
   value = "https://${aws_cloudfront_distribution.spa_distribution.domain_name}"
