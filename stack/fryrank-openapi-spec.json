@@ -12,6 +12,52 @@
   ],
   "paths": {
     "/api/userMetadata": {
+      "options": {
+        "summary": "CORS support",
+        "description": "Enable CORS by returning correct headers",
+        "tags": [
+          "CORS"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response for CORS method",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\n \"statusCode\": 200\n}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,PUT,POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "user-metadata-controller"
@@ -202,6 +248,52 @@
       }
     },
     "/api/reviews": {
+      "options": {
+        "summary": "CORS support",
+        "description": "Enable CORS by returning correct headers",
+        "tags": [
+          "CORS"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response for CORS method",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\n \"statusCode\": 200\n}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "review-controller"
@@ -332,6 +424,52 @@
       }
     },
     "/api/reviews/recent": {
+      "options": {
+        "summary": "CORS support",
+        "description": "Enable CORS by returning correct headers",
+        "tags": [
+          "CORS"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response for CORS method",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\n \"statusCode\": 200\n}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "review-controller"
@@ -395,6 +533,52 @@
       }
     },
     "/api/reviews/aggregateInformation": {
+      "options": {
+        "summary": "CORS support",
+        "description": "Enable CORS by returning correct headers",
+        "tags": [
+          "CORS"
+        ],
+        "responses": {
+          "200": {
+            "description": "Default response for CORS method",
+            "headers": {
+              "Access-Control-Allow-Origin": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Methods": {
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Access-Control-Allow-Headers": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": {
+            "application/json": "{\n \"statusCode\": 200\n}"
+          },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          }
+        }
+      },
       "get": {
         "tags": [
           "review-controller"
