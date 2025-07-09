@@ -1,3 +1,8 @@
+# CloudFront origin access identity
+resource "aws_cloudfront_origin_access_identity" "spa_oai" {
+  comment = "OAI for ${local.name} SPA"
+}
+
 # CloudFront origin access control
 resource "aws_cloudfront_origin_access_control" "spa_oac" {
   name                              = "${local.name}-spa-oac"
@@ -29,6 +34,9 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
     domain_name              = aws_s3_bucket.spa_bucket.bucket_regional_domain_name
     origin_id                = "S3Origin"  # Match CloudFormation's origin ID
     origin_access_control_id = aws_cloudfront_origin_access_control.spa_oac.id
+    s3_origin_config {
+      origin_access_identity = aws_cloudfront_origin_access_identity.spa_oai.cloudfront_access_identity_path
+    }
   }
 
   default_cache_behavior {
