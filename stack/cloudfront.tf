@@ -22,12 +22,9 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   }
 
   origin {
-    domain_name = aws_s3_bucket.spa_bucket.bucket_regional_domain_name
-    origin_id   = "S3Origin"  # Match CloudFormation's origin ID
-
-    s3_origin_config {
-      origin_access_identity = aws_cloudfront_origin_access_identity.spa_oai.cloudfront_access_identity_path
-    }
+    domain_name              = aws_s3_bucket.spa_bucket.bucket_regional_domain_name
+    origin_id                = "S3Origin"
+    origin_access_control_id = aws_cloudfront_origin_access_control.spa_oac.id
   }
 
   default_cache_behavior {
