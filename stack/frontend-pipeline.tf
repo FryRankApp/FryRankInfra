@@ -42,21 +42,4 @@ resource "aws_codepipeline" "frontend" {
       }
     }
   }
-
-  stage {
-    name = "Deploy"
-
-    action {
-      name            = "DeployToS3"
-      category        = "Deploy"
-      owner           = "AWS"
-      provider        = "S3"
-      input_artifacts = ["BuildOutput"]
-      version         = "1"
-      configuration = {
-        BucketName = aws_s3_bucket.spa_bucket.bucket
-        Extract    = "true"
-      }
-    }
-  }
 } 
