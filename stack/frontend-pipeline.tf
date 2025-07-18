@@ -1,5 +1,5 @@
 resource "aws_codepipeline" "frontend" {
-  name     = "frontend-pipeline"
+  name     = "${local.name}-frontend-deploy-pipeline"
   role_arn = aws_iam_role.frontend_codepipeline_role.arn
 
   artifact_store {

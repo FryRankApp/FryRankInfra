@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "frontend_build" {
-  name          = "frontend-build"
+  name          = "${local.name}-frontend-build"
   description   = "Builds the React frontend and uploads to S3."
   service_role  = aws_iam_role.frontend_codebuild_role.arn
 
@@ -24,7 +24,7 @@ resource "aws_codebuild_project" "frontend_build" {
 }
 
 resource "aws_iam_role" "frontend_codebuild_role" {
-  name = "frontend-codebuild-role"
+  name = "${local.name}-frontend-codebuild-role"
   assume_role_policy = data.aws_iam_policy_document.codebuild_assume_role_policy.json
 }
 
@@ -44,7 +44,7 @@ data "aws_iam_policy_document" "codebuild_assume_role_policy" {
 }
 
 resource "aws_iam_role" "frontend_codepipeline_role" {
-  name = "frontend-codepipeline-role"
+  name = "${local.name}-frontend-codepipeline-role"
   assume_role_policy = data.aws_iam_policy_document.codepipeline_assume_role_policy.json
 }
 
