@@ -47,7 +47,9 @@ resource "aws_iam_role_policy" "frontend_codebuild_logs_policy" {
           "logs:CreateLogStream",
           "logs:PutLogEvents"
         ],
-        Resource = "arn:aws:logs:*:*:*"
+        Resource = [
+          "arn:aws:logs:${local.region}:${data.aws_caller_identity.current.account_id}:log-group:/aws/codebuild/${local.name}-frontend-build:*"
+        ]
       }
     ]
   })
