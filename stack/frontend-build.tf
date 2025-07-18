@@ -33,6 +33,26 @@ resource "aws_iam_role_policy_attachment" "frontend_codebuild_policy_attachment"
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
+resource "aws_iam_role_policy" "frontend_codebuild_logs_policy" {
+  name = "${local.name}-frontend-codebuild-logs-policy"
+  role = aws_iam_role.frontend_codebuild_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "arn:aws:logs:*:*:*"
+      }
+    ]
+  })
+}
+
 data "aws_iam_policy_document" "codebuild_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
