@@ -20,7 +20,7 @@ resource "aws_codepipeline" "frontend" {
       configuration = {
         ConnectionArn    = aws_codestarconnections_connection.github.arn
         FullRepositoryId = "FryRankApp/FryRankFrontend"
-        BranchName       = "main"
+        BranchName       = "master"
         DetectChanges    = "true"
       }
     }
