@@ -3,7 +3,7 @@ resource "aws_codepipeline" "frontend" {
   role_arn = aws_iam_role.frontend_codepipeline_role.arn
 
   artifact_store {
-    location = aws_s3_bucket.spa_bucket.bucket
+    location = aws_s3_bucket.pipeline_artifacts.bucket
     type     = "S3"
   }
 
