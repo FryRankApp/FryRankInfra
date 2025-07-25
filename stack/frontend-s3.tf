@@ -148,3 +148,8 @@ resource "aws_s3_bucket_policy" "spa_bucket_policy" {
     ]
   })
 }
+
+resource "aws_s3_bucket" "pipeline_artifacts" {
+  bucket = "${local.name}-pipeline-artifacts"
+  tags   = local.tags
+}
