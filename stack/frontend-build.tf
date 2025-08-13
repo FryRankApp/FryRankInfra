@@ -80,7 +80,7 @@ resource "aws_iam_role_policy" "frontend_codebuild_ssm_policy" {
           "kms:Decrypt"
         ]
         Resource = [
-          "arn:aws:kms:${local.region}:${data.aws_caller_identity.current.account_id}:key/*"
+          "arn:aws:kms:${local.region}:${data.aws_caller_identity.current.account_id}:key/alias/aws/ssm"
         ]
         Condition = {
           StringEquals = {
