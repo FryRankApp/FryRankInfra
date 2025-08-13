@@ -55,6 +55,43 @@ resource "aws_iam_role_policy" "frontend_codebuild_logs_policy" {
   })
 }
 
+resource "aws_iam_role_policy" "frontend_codebuild_ssm_policy" {
+  name = "${local.name}-frontend-codebuild-ssm-policy"
+  role = aws_iam_role.frontend_codebuild_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ]
+        Resource = [
+          "arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/GOOGLE_API_KEY",
+          "arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/GOOGLE_AUTH_KEY",
+          "arn:aws:ssm:${local.region}:${data.aws_caller_identity.current.account_id}:parameter/BACKEND_SERVICE_PATH"
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt"
+        ]
+        Resource = [
+          "arn:aws:kms:${local.region}:${data.aws_caller_identity.current.account_id}:key/alias/aws/ssm"
+        ]
+        Condition = {
+          StringEquals = {
+            "kms:ViaService" = "ssm.${local.region}.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+}
+
 data "aws_iam_policy_document" "codebuild_assume_role_policy" {
   statement {
     actions = ["sts:AssumeRole"]
