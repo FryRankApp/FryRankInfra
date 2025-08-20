@@ -16,3 +16,27 @@ output "lambda_s3_bucket_region" {
   description = "The AWS region this bucket resides in."
   value       = module.fryrank_lambda_function_bucket.s3_bucket_region
 }
+
+################################################################################
+# DynamoDB Tables
+################################################################################
+
+output "rankings_table_name" {
+  description = "The name of the rankings DynamoDB table"
+  value       = aws_dynamodb_table.rankings.name
+}
+
+output "rankings_table_arn" {
+  description = "The ARN of the rankings DynamoDB table"
+  value       = aws_dynamodb_table.rankings.arn
+}
+
+output "user_metadata_table_name" {
+  description = "The name of the user metadata DynamoDB table"
+  value       = aws_dynamodb_table.user_metadata.name
+}
+
+output "user_metadata_table_arn" {
+  description = "The ARN of the user metadata DynamoDB table"
+  value       = aws_dynamodb_table.user_metadata.arn
+}
