@@ -36,12 +36,12 @@ resource "aws_api_gateway_usage_plan" "fryrank_api_usage_plan" {
   }
 
   quota_settings {
-    limit = 50000
-    period = "MONTH"
+    limit = 5000
+    period = "DAY"
   }
 
   throttle_settings {
-    burst_limit = 500
-    rate_limit  = 100.0
+    burst_limit = 100
+    rate_limit  = 50.0
   }
 }
