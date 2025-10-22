@@ -113,7 +113,7 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
   runtime = "java21"
   description = ""
   timeout = 15
-  reserved_concurrency_limit = 50  # Limit total concurrent executions
+  reserved_concurrency_limit = 25  # Limit total concurrent executions
 
   environment {
     variables = {
