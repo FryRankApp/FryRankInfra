@@ -8,7 +8,7 @@ locals {
     add_new_review = {
       name = "addNewReview",
       handler = "com.fryrank.handler.AddNewReviewForRestaurantHandler"
-    }
+    },
     get_aggregate_review_information = {
       name = "getAggregateReviewInformation",
       handler = "com.fryrank.handler.GetAggregateReviewInformationHandler"
@@ -30,6 +30,26 @@ locals {
       handler = "com.fryrank.handler.UpsertPublicUserMetadataHandler"
     }
   }
+
+  # Developers who need their own copies for beta testing
+  beta_test_developers = ["matz", "oxyflush", "nicholaspriv"]
+  
+  # Create developer-specific lambda function definitions
+  # Format: {function_key}_{developer} = {name: "functionName-developer", ...}
+  beta_test_lambda_functions = merge([
+    for developer in local.beta_test_developers : {
+      for func_key, func_config in local.lambda_functions :
+      "${func_key}_${developer}" => {
+        name = "${func_config.name}-${developer}",
+        handler = func_config.handler,
+        developer = developer,
+        base_function_key = func_key
+      }
+    }
+  ]...)
+  
+  # Merged map of all lambda functions (regular + developer-specific) for permissions
+  all_lambda_functions = merge(local.lambda_functions, local.beta_test_lambda_functions)
 }
 
 data "aws_iam_policy_document" "assume_role_policy_document" {
@@ -88,7 +108,7 @@ resource "aws_iam_role_policy" "ssm_access_policy" {
 }
 
 resource "aws_lambda_permission" "fryrank_api_lambda_permission" {
-  for_each      = local.lambda_functions
+  for_each      = local.all_lambda_functions
   action        = "lambda:InvokeFunction"
   function_name = each.value.name
   principal     = "apigateway.amazonaws.com"
@@ -100,9 +120,7 @@ resource "aws_lambda_permission" "fryrank_api_lambda_permission" {
 
 
 resource "aws_lambda_function" "fryrank_api_lambdas" {
-  # If the file is not in the current working directory you will need to include a
-  # path.module in the filename.
-  for_each      = local.lambda_functions
+  for_each      = local.all_lambda_functions
   function_name = each.value.name
   role          = aws_iam_role.lambda_execution_role.arn
   handler       = each.value.handler
@@ -111,7 +129,7 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
   s3_key = data.aws_s3_object.lambda_code_zip.key
 
   runtime = "java21"
-  description = ""
+  description = lookup(each.value, "developer", null) != null ? "Beta test copy for developer ${each.value.developer}" : ""
   timeout = 15
 
   environment {
