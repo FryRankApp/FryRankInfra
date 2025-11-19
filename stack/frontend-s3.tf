@@ -1,12 +1,12 @@
 # S3 bucket for hosting the React SPA
 resource "aws_s3_bucket" "spa_bucket" {
-  bucket = "${local.name}-spa-bucket"
+  bucket = "${local.name_prefix}-spa-bucket"
   tags   = local.tags
 }
 
 # S3 bucket for CloudFront logs
 resource "aws_s3_bucket" "log_bucket" {
-  bucket = "${local.name}-spa-logs"
+  bucket = "${local.name_prefix}-spa-logs"
   tags   = local.tags
 }
 
@@ -150,6 +150,6 @@ resource "aws_s3_bucket_policy" "spa_bucket_policy" {
 }
 
 resource "aws_s3_bucket" "pipeline_artifacts" {
-  bucket = "${local.name}-pipeline-artifacts"
+  bucket = "${local.name_prefix}-pipeline-artifacts"
   tags   = local.tags
 }

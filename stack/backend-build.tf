@@ -1,6 +1,6 @@
 # Data source for terraform state bucket
 data "aws_s3_bucket" "terraform_state" {
-  bucket = "fryrank-terraform-state-bucket"
+  bucket = var.terraform_state_bucket_name
 }
 
 # CodeBuild IAM Role
