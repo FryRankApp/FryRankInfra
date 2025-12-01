@@ -7,7 +7,7 @@ data "aws_caller_identity" "current" {}
 
 locals {
   name        = "fryrank-app"
-  region      = var.region
+  region      = "us-west-2"
   account_id  = data.aws_caller_identity.current.account_id
   
   # Create terraform state bucket name based on account ID
