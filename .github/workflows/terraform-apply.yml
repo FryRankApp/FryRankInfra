@@ -32,8 +32,15 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
+      - name: "Get AWS Account ID and configure backend"
+        run: |
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          BUCKET_NAME="fryrank-app-terraform-state-${ACCOUNT_ID}"
+          echo "Using bucket: $BUCKET_NAME"
+          echo "bucket=$BUCKET_NAME" >> backend.hcl
+
       - name: "Terraform Init"
-        run: "terraform init"
+        run: "terraform init -backend-config=backend.hcl"
 
       - name: "Terraform Apply"
         run: "terraform apply -auto-approve -input=false"

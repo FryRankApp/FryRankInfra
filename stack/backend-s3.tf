@@ -1,5 +1,5 @@
 locals {
-  lambda_bucket_name = "${local.name_prefix}-lambda-function-bucket"
+  lambda_bucket_name = "${local.name}-lambda-function-bucket-${local.account_id}"
 }
 
 module "fryrank_lambda_function_bucket" {
