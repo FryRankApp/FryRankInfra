@@ -1,6 +1,3 @@
-# Get current AWS account ID
-data "aws_caller_identity" "current" {}
-
 # CloudFront distribution
 resource "aws_cloudfront_distribution" "spa_distribution" {
   enabled             = true
