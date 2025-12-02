@@ -12,6 +12,10 @@ locals {
   
   # Create terraform state bucket name based on account ID
   terraform_state_bucket_name = "${local.name}-terraform-state-${local.account_id}"
+  
+  # Construct the state bucket ARN directly (instead of using a data source)
+  # to avoid Terraform trying to manage the bucket (which is managed by remote-state/)
+  terraform_state_bucket_arn = "arn:aws:s3:::${local.terraform_state_bucket_name}"
 
   tags = {
     Name        = local.name

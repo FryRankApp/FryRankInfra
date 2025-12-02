@@ -1,7 +1,6 @@
-# Data source for terraform state bucket
-data "aws_s3_bucket" "terraform_state" {
-  bucket = local.terraform_state_bucket_name
-}
+# Note: We construct the state bucket ARN directly instead of using a data source
+# to avoid Terraform trying to manage the bucket (which is managed by remote-state/)
+# The bucket ARN is constructed in main.tf as: arn:aws:s3:::${local.terraform_state_bucket_name}
 
 # CodeBuild IAM Role
 resource "aws_iam_role" "codebuild_role" {
@@ -61,8 +60,8 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "s3:GetObjectVersion"
         ]
         Resource = [
-          data.aws_s3_bucket.terraform_state.arn,
-          "${data.aws_s3_bucket.terraform_state.arn}/*"
+          local.terraform_state_bucket_arn,
+          "${local.terraform_state_bucket_arn}/*"
         ]
       },
       {

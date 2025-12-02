@@ -59,10 +59,11 @@ resource "aws_iam_role" "lambda_execution_role" {
   assume_role_policy = data.aws_iam_policy_document.assume_role_policy_document.json
 }
 
-data "aws_s3_object" "lambda_code_zip" {
-  bucket = module.fryrank_lambda_function_bucket.s3_bucket_id
-  key = local.lambda_function_key
-}
+# Note: The Lambda code zip file (FryRankLambda.zip) must be uploaded to the S3 bucket
+# before the Lambda functions can be created. This is typically done by:
+# 1. Running your CodePipeline/CodeBuild process first, OR
+# 2. Manually uploading: aws s3 cp FryRankLambda.zip s3://<bucket-name>/FryRankLambda.zip
+# The bucket is created by Terraform, but the file must exist before Lambda functions are created.
 
 resource "aws_iam_role_policy" "logging_policy" {
   name   = "lambda-logs"
@@ -90,12 +91,15 @@ resource "aws_iam_role_policy" "ssm_access_policy" {
 resource "aws_lambda_permission" "fryrank_api_lambda_permission" {
   for_each      = local.lambda_functions
   action        = "lambda:InvokeFunction"
-  function_name = each.value.name
+  function_name = aws_lambda_function.fryrank_api_lambdas[each.key].function_name
   principal     = "apigateway.amazonaws.com"
 
   # The /* part allows invocation from any stage, method and resource path
   # within API Gateway.
   source_arn = "${aws_api_gateway_rest_api.fryrank_api.execution_arn}/*"
+  
+  # Explicitly depend on the Lambda function being created first
+  depends_on = [aws_lambda_function.fryrank_api_lambdas]
 }
 
 
@@ -107,8 +111,11 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
   role          = aws_iam_role.lambda_execution_role.arn
   handler       = each.value.handler
 
-  s3_bucket = data.aws_s3_object.lambda_code_zip.bucket
-  s3_key = data.aws_s3_object.lambda_code_zip.key
+  # Reference the bucket and key directly instead of using a data source
+  # This allows the bucket to be created first, then the Lambda code can be uploaded
+  # and the functions created/updated in a subsequent apply
+  s3_bucket = module.fryrank_lambda_function_bucket.s3_bucket_id
+  s3_key    = local.lambda_function_key
 
   runtime = "java21"
   description = ""

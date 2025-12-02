@@ -1,0 +1,15 @@
+# Example backend configuration file
+# For Beta and Prod stages, it will be automatically generated through
+#   GitHub Actions. For sandbox accounts, follow the steps below:
+#
+# Copy this to backend.hcl and replace {ACCOUNT_ID} with your AWS account ID
+#
+# To get your account ID:
+#   aws sts get-caller-identity --query Account --output text
+#
+# Then run:
+#   terraform init "-backend-config=backend.hcl"
+#   Note: Check your shell type for the proper syntax
+
+bucket = "fryrank-app-terraform-state-{ACCOUNT_ID}"
+
