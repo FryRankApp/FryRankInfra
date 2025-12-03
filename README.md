@@ -41,11 +41,12 @@ be followed:
    - BACKEND_SERVICE_PATH
 6. Set `create_lambdas` to false in `lambda.tf`.
 7. Run `terraform apply`
-8. Build the Lambda package and upload the zip to the  `fryrank-app-lambda-function-bucket-[YOUR_ACCOUNT_ID]`. (Zip file location: `FryRankLambda/build/distributions/FryRankLambda.zip`)
-9. Re-run `terraform apply` with `create_lambdas` set to true to deploy the Lambdas
-10. Update `BACKEND_SERVICE_PATH` .env var in FryRankFrontend to the API Gateway deployed endpoint and build the frontend (`npm run dev`).
-11. Upload your frontend to S3 by running the command `aws s3 cp [YOUR_PATH_HERE]/FryRankFrontend/build s3://fryrank-app-spa-bucket-[YOUR_ACCOUNT_ID_HERE]/ --recursive`
-12. Start testing, either via your CloudFront URL or by calling API Gateway directly (from the console or CLI)
+8. [For full-stack testing only] Update the Lambda package so that your CloudFront URL is set as an allowed origin in the CORS configuration.
+9. Build the Lambda package and upload the zip to the  `fryrank-app-lambda-function-bucket-[YOUR_ACCOUNT_ID]`. (Zip file location: `FryRankLambda/build/distributions/FryRankLambda.zip`)
+10. Re-run `terraform apply` with `create_lambdas` set to true to deploy the Lambdas
+11. [For full-stack testing only] Update `BACKEND_SERVICE_PATH` .env var in FryRankFrontend to the API Gateway deployed endpoint and build the frontend (`npm run dev`).
+12. Upload your frontend to S3 by running the command `aws s3 cp [YOUR_PATH_HERE]/FryRankFrontend/build s3://fryrank-app-spa-bucket-[YOUR_ACCOUNT_ID_HERE]/ --recursive`
+13. Start testing, either via your CloudFront URL or by calling API Gateway directly (from the console or CLI)
 
 ### What's not included in the sandbox testing process
 - Right now, the frontend and backend pipelines are not connected to GitHub. The deployments currently take place manually by building locally and uploading the build artifacts to S3, as described above. This may be changed in the future to facilitate the local testing process.
