@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "fryrank_api" {
-  body = file("${path.module}/fryrank-openapi-spec.json")
+  body = replace(file("${path.module}/fryrank-openapi-spec.json"), "390844755099", data.aws_caller_identity.current.account_id)
 
   name = "fryrank-api"
 
@@ -27,16 +27,16 @@ resource "aws_api_gateway_stage" "fryrank_api" {
 }
 
 resource "aws_api_gateway_usage_plan" "fryrank_api_usage_plan" {
-  name          = "fryrank-api-usage-plan"
-  description   = "quota and throtte settings for fryrank_api"
+  name        = "fryrank-api-usage-plan"
+  description = "quota and throtte settings for fryrank_api"
 
   api_stages {
     api_id = aws_api_gateway_rest_api.fryrank_api.id
-    stage = aws_api_gateway_stage.fryrank_api.stage_name
+    stage  = aws_api_gateway_stage.fryrank_api.stage_name
   }
 
   quota_settings {
-    limit = 5000
+    limit  = 5000
     period = "DAY"
   }
 
