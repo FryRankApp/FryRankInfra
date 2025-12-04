@@ -1,7 +1,11 @@
-# Get current AWS account ID
-data "aws_caller_identity" "current" {}
+# CloudFront distribution (logging always enabled)
+# This file configures the CloudFront distribution and ensures the S3 log bucket
+# resources are created before CloudFront (so CloudFront can write logs).
+#
+# Note: The S3 log bucket and its ownership/ACL/policy are defined in
+# `stack/frontend-s3.tf`. The distribution depends on those resources so that
+# CloudFront logging won't fail due to timing/order issues.
 
-# CloudFront distribution
 resource "aws_cloudfront_distribution" "spa_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
@@ -9,7 +13,16 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   price_class         = "PriceClass_100"
   tags                = local.tags
 
-  # Configure logging
+  # Ensure the S3 log bucket, ownership controls, ACL and policy are created
+  # before creating the CloudFront distribution so that CloudFront can write logs.
+  depends_on = [
+    aws_s3_bucket.log_bucket,
+    aws_s3_bucket_ownership_controls.log_bucket,
+    aws_s3_bucket_acl.log_bucket,
+    aws_s3_bucket_policy.log_bucket
+  ]
+
+  # Configure logging (always enabled)
   logging_config {
     bucket          = aws_s3_bucket.log_bucket.bucket_domain_name
     include_cookies = false
@@ -25,7 +38,7 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "S3Origin"  # Match CloudFormation's origin ID
+    target_origin_id       = "S3Origin" # Match CloudFormation's origin ID
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
 
@@ -37,7 +50,7 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
     }
   }
 
-  # Handle SPA routing by redirecting all paths to index.html
+  # Handle SPA routing by redirecting common error responses to index.html
   custom_error_response {
     error_code         = 403
     response_code      = 200
@@ -73,4 +86,4 @@ resource "aws_cloudfront_origin_access_control" "spa_oac" {
 # Output the CloudFront distribution URL
 output "spa_url" {
   value = "https://${aws_cloudfront_distribution.spa_distribution.domain_name}"
-} 
+}

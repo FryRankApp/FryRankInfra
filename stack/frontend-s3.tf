@@ -1,12 +1,12 @@
 # S3 bucket for hosting the React SPA
 resource "aws_s3_bucket" "spa_bucket" {
-  bucket = "${local.name}-spa-bucket"
+  bucket = "${local.name}-spa-bucket-${local.account_id}"
   tags   = local.tags
 }
 
 # S3 bucket for CloudFront logs
 resource "aws_s3_bucket" "log_bucket" {
-  bucket = "${local.name}-spa-logs"
+  bucket = "${local.name}-spa-logs-${local.account_id}"
   tags   = local.tags
 }
 
@@ -30,9 +30,9 @@ resource "aws_s3_bucket_acl" "log_bucket" {
 resource "aws_s3_bucket_public_access_block" "log_bucket" {
   bucket = aws_s3_bucket.log_bucket.id
 
-  block_public_acls       = false  # Allow ACLs for CloudFront logging
+  block_public_acls       = false # Allow ACLs for CloudFront logging
   block_public_policy     = true
-  ignore_public_acls      = false  # Don't ignore ACLs
+  ignore_public_acls      = false # Don't ignore ACLs
   restrict_public_buckets = true
 }
 
@@ -40,23 +40,45 @@ resource "aws_s3_bucket_public_access_block" "log_bucket" {
 resource "aws_s3_bucket_policy" "log_bucket" {
   depends_on = [aws_s3_bucket_acl.log_bucket]
   bucket     = aws_s3_bucket.log_bucket.id
+
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
+      # Allow the CloudFront log delivery service to put objects into the bucket.
+      # Restrict by SourceAccount to prevent cross-account abuse.
       {
-        Sid       = "AllowCloudFrontLogDelivery"
-        Effect    = "Allow"
+        Sid    = "AllowCloudFrontLogDelivery"
+        Effect = "Allow"
+        Principal = {
+          Service = "logging.s3.amazonaws.com"
+        }
+        Action = [
+          "s3:PutObject"
+        ]
+        Resource = [
+          "${aws_s3_bucket.log_bucket.arn}/*"
+        ]
+        Condition = {
+          StringEquals = {
+            "aws:SourceAccount" = data.aws_caller_identity.current.account_id
+          }
+        }
+      },
+
+      # Allow the account (root principal) to get/put the bucket ACLs which is
+      # required when creating/updating CloudFront distributions that reference this bucket for logging.
+      {
+        Sid    = "AllowAccountToManageBucketAcl"
+        Effect = "Allow"
         Principal = {
           AWS = "arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"
         }
         Action = [
-          "s3:PutObject",
           "s3:GetBucketAcl",
           "s3:PutBucketAcl"
         ]
         Resource = [
-          aws_s3_bucket.log_bucket.arn,
-          "${aws_s3_bucket.log_bucket.arn}/*"
+          aws_s3_bucket.log_bucket.arn
         ]
       }
     ]
@@ -80,7 +102,7 @@ resource "aws_s3_bucket_lifecycle_configuration" "spa_bucket" {
     status = "Enabled"
 
     filter {
-      prefix = ""  # Apply to all objects in the bucket
+      prefix = "" # Apply to all objects in the bucket
     }
 
     noncurrent_version_expiration {
@@ -132,12 +154,12 @@ resource "aws_s3_bucket_policy" "spa_bucket_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid = "AllowCloudFrontServicePrincipalReadOnly",
+        Sid    = "AllowCloudFrontServicePrincipalReadOnly",
         Effect = "Allow",
         Principal = {
           Service = "cloudfront.amazonaws.com"
         },
-        Action = "s3:GetObject",
+        Action   = "s3:GetObject",
         Resource = "${aws_s3_bucket.spa_bucket.arn}/*",
         Condition = {
           StringEquals = {
@@ -150,6 +172,6 @@ resource "aws_s3_bucket_policy" "spa_bucket_policy" {
 }
 
 resource "aws_s3_bucket" "pipeline_artifacts" {
-  bucket = "${local.name}-pipeline-artifacts"
+  bucket = "${local.name}-pipeline-artifacts-${local.account_id}"
   tags   = local.tags
 }

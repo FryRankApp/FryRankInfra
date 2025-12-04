@@ -2,15 +2,22 @@ provider "aws" {
   region = local.region
 }
 
+# Get current AWS account ID
+data "aws_caller_identity" "current" {}
+
 locals {
   name   = "fryrank-app"
   region = "us-west-2"
+  account_id  = data.aws_caller_identity.current.account_id
+
+  # Create terraform state bucket name based on account ID
+  terraform_state_bucket_name = "${local.name}-terraform-state-${local.account_id}"
 
   tags = {
     Name       = local.name
     Repository = "https://github.com/FryRankApp/FryRankInfra"
+    AccountId   = local.account_id
   }
-  terraform_state_bucket_name = "fryrank-terraform-state-bucket"
 }
 
 module "fryrank-terraform-state-bucket" {
