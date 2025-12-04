@@ -15,28 +15,27 @@ locals {
     get_all_reviews = {
       name    = "getAllReviews",
       handler = "com.fryrank.handler.GetAllReviewsHandler"
-    }
+    },
     add_new_review = {
       name    = "addNewReview",
       handler = "com.fryrank.handler.AddNewReviewForRestaurantHandler"
     }
-    }
     get_aggregate_review_information = {
       name    = "getAggregateReviewInformation",
       handler = "com.fryrank.handler.GetAggregateReviewInformationHandler"
-    }
+    },
     get_top_reviews = {
       name    = "getRecentReviews",
       handler = "com.fryrank.handler.GetRecentReviewsHandler"
-    }
+    },
     get_public_user_metadata = {
       name    = "getPublicUserMetadata",
       handler = "com.fryrank.handler.GetPublicUserMetadataHandler"
-    }
+    },
     put_public_user_metadata = {
       name    = "putPublicUserMetadata",
       handler = "com.fryrank.handler.PutPublicUserMetadataHandler"
-    }
+    },
     upsert_public_user_metadata = {
       name    = "upsertPublicUserMetadata",
       handler = "com.fryrank.handler.UpsertPublicUserMetadataHandler"
