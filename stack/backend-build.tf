@@ -4,7 +4,8 @@
 
 # CodeBuild IAM Role
 resource "aws_iam_role" "codebuild_role" {
-  name = "${local.name}-codebuild-role"
+  count = local.isPipelineAccount
+  name  = "${local.name}-codebuild-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
@@ -24,8 +25,9 @@ resource "aws_iam_role" "codebuild_role" {
 
 # CodeBuild IAM Policy
 resource "aws_iam_role_policy" "codebuild_policy" {
-  name = "${local.name}-codebuild-policy"
-  role = aws_iam_role.codebuild_role.id
+  count = local.isPipelineAccount
+  name  = "${local.name}-codebuild-policy"
+  role  = aws_iam_role.codebuild_role[0].id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -79,10 +81,11 @@ resource "aws_iam_role_policy" "codebuild_policy" {
 
 # CodeBuild Project
 resource "aws_codebuild_project" "lambda_build" {
+  count         = local.isPipelineAccount
   name          = "${local.name}-lambda-build"
   description   = "Builds Java Lambda functions for ${local.name}"
   build_timeout = "15"
-  service_role  = aws_iam_role.codebuild_role.arn
+  service_role  = aws_iam_role.codebuild_role[0].arn
 
   artifacts {
     type = "CODEPIPELINE"

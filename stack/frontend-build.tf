@@ -1,16 +1,17 @@
 resource "aws_codebuild_project" "frontend_build" {
-  name          = "${local.name}-frontend-build"
-  description   = "Builds the React frontend and uploads to S3."
-  service_role  = aws_iam_role.frontend_codebuild_role.arn
+  count        = local.isPipelineAccount
+  name         = "${local.name}-frontend-build"
+  description  = "Builds the React frontend and uploads to S3."
+  service_role = aws_iam_role.frontend_codebuild_role[0].arn
 
   artifacts {
     type = "CODEPIPELINE"
   }
 
   environment {
-    compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/standard:7.0"
-    type                        = "LINUX_CONTAINER"
+    compute_type = "BUILD_GENERAL1_SMALL"
+    image        = "aws/codebuild/standard:7.0"
+    type         = "LINUX_CONTAINER"
     environment_variable {
       name  = "ENV"
       value = "production"
@@ -18,24 +19,27 @@ resource "aws_codebuild_project" "frontend_build" {
   }
 
   source {
-    type            = "CODEPIPELINE"
-    buildspec       = "buildspec.yml"
+    type      = "CODEPIPELINE"
+    buildspec = "buildspec.yml"
   }
 }
 
 resource "aws_iam_role" "frontend_codebuild_role" {
-  name = "${local.name}-frontend-codebuild-role"
-  assume_role_policy = data.aws_iam_policy_document.codebuild_assume_role_policy.json
+  count              = local.isPipelineAccount
+  name               = "${local.name}-frontend-codebuild-role"
+  assume_role_policy = data.aws_iam_policy_document.codebuild_assume_role_policy[0].json
 }
 
 resource "aws_iam_role_policy_attachment" "frontend_codebuild_policy_attachment" {
-  role       = aws_iam_role.frontend_codebuild_role.name
+  count      = local.isPipelineAccount
+  role       = aws_iam_role.frontend_codebuild_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
 resource "aws_iam_role_policy" "frontend_codebuild_logs_policy" {
-  name = "${local.name}-frontend-codebuild-logs-policy"
-  role = aws_iam_role.frontend_codebuild_role.id
+  count = local.isPipelineAccount
+  name  = "${local.name}-frontend-codebuild-logs-policy"
+  role  = aws_iam_role.frontend_codebuild_role[0].id
 
   policy = jsonencode({
     Version = "2012-10-17",
@@ -56,8 +60,9 @@ resource "aws_iam_role_policy" "frontend_codebuild_logs_policy" {
 }
 
 resource "aws_iam_role_policy" "frontend_codebuild_ssm_policy" {
-  name = "${local.name}-frontend-codebuild-ssm-policy"
-  role = aws_iam_role.frontend_codebuild_role.id
+  count = local.isPipelineAccount
+  name  = "${local.name}-frontend-codebuild-ssm-policy"
+  role  = aws_iam_role.frontend_codebuild_role[0].id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -93,6 +98,7 @@ resource "aws_iam_role_policy" "frontend_codebuild_ssm_policy" {
 }
 
 data "aws_iam_policy_document" "codebuild_assume_role_policy" {
+  count = local.isPipelineAccount
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -103,16 +109,19 @@ data "aws_iam_policy_document" "codebuild_assume_role_policy" {
 }
 
 resource "aws_iam_role" "frontend_codepipeline_role" {
-  name = "${local.name}-frontend-codepipeline-role"
-  assume_role_policy = data.aws_iam_policy_document.codepipeline_assume_role_policy.json
+  count              = local.isPipelineAccount
+  name               = "${local.name}-frontend-codepipeline-role"
+  assume_role_policy = data.aws_iam_policy_document.codepipeline_assume_role_policy[0].json
 }
 
 resource "aws_iam_role_policy_attachment" "frontend_codepipeline_policy_attachment" {
-  role       = aws_iam_role.frontend_codepipeline_role.name
+  count      = local.isPipelineAccount
+  role       = aws_iam_role.frontend_codepipeline_role[0].name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
 }
 
 data "aws_iam_policy_document" "codepipeline_assume_role_policy" {
+  count = local.isPipelineAccount
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -120,4 +129,4 @@ data "aws_iam_policy_document" "codepipeline_assume_role_policy" {
       identifiers = ["codepipeline.amazonaws.com"]
     }
   }
-} 
+}
