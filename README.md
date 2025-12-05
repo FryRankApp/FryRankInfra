@@ -34,7 +34,7 @@ be followed:
 2. Run `terraform apply` on remote-state to bootstrap the terraform state in your account
 3. Switch to the `stack` directory. Create the `backend.hcl` file inside the stack directory following the example in `backend.hcl.example`
 4. Run `terraform init "-backend-config=backend.hcl"` to initialize your state, with the proper bucket name
-5. Add the following AWS Systems Manager parameters to the us-west-2 *(Oregon) region. Copy the values from the Beta account (excluding `BACKEND_SERVICE_PATH`).
+5. Add the following AWS Systems Manager parameters to the us-west-2 (Oregon) region. Copy the values from the Beta account (excluding `BACKEND_SERVICE_PATH`).
    - GOOGLE_API_KEY (SecureString)
    - GOOGLE_AUTH_KEY (SecureString)
    - DATABASE_URI (SecureString)
