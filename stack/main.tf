@@ -10,6 +10,9 @@ locals {
   region     = "us-west-2"
   account_id = data.aws_caller_identity.current.account_id
 
+  # Whether this account should host the pipelines.
+  isPipelineAccount = local.account_id == "390844755099" || local.account_id == "832016013924" ? 1 : 0
+
   # Create terraform state bucket name based on account ID
   terraform_state_bucket_name = "${local.name}-terraform-state-${local.account_id}"
 

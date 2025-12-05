@@ -1,6 +1,6 @@
 # CodeStar Connection to GitHub
 resource "aws_codestarconnections_connection" "github" {
-  count = local.account_id == "390844755099" ? 1 : 0
+  count = local.isPipelineAccount
 
   name          = "${local.name}-github-connection"
   provider_type = "GitHub"
@@ -9,7 +9,7 @@ resource "aws_codestarconnections_connection" "github" {
 
 # CodePipeline IAM role
 resource "aws_iam_role" "codepipeline_role" {
-  count = local.account_id == "390844755099" ? 1 : 0
+  count = local.isPipelineAccount
 
   name = "${local.name}-pipeline-role"
 
@@ -31,7 +31,7 @@ resource "aws_iam_role" "codepipeline_role" {
 
 # CodePipeline IAM policy
 resource "aws_iam_role_policy" "codepipeline_policy" {
-  count = local.account_id == "390844755099" ? 1 : 0
+  count = local.isPipelineAccount
 
   name = "${local.name}-pipeline-policy"
   role = aws_iam_role.codepipeline_role[0].id
@@ -88,7 +88,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
 
 # CodePipeline
 resource "aws_codepipeline" "fryrank_lambda_pipeline" {
-  count = local.account_id == "390844755099" ? 1 : 0
+  count = local.isPipelineAccount
 
   name     = "${local.name}-lambda-deploy-pipeline"
   role_arn = aws_iam_role.codepipeline_role[0].arn

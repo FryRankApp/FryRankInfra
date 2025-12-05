@@ -1,7 +1,7 @@
 resource "aws_codepipeline" "frontend" {
-  count    = local.account_id == "390844755099" ? 1 : 0
+  count    = local.isPipelineAccount
   name     = "${local.name}-frontend-deploy-pipeline"
-  role_arn = aws_iam_role.frontend_codepipeline_role.arn
+  role_arn = aws_iam_role.frontend_codepipeline_role[0].arn
 
   artifact_store {
     location = aws_s3_bucket.pipeline_artifacts.bucket
@@ -39,7 +39,7 @@ resource "aws_codepipeline" "frontend" {
       output_artifacts = ["BuildOutput"]
       version          = "1"
       configuration = {
-        ProjectName = aws_codebuild_project.frontend_build.name
+        ProjectName = aws_codebuild_project.frontend_build[0].name
       }
     }
   }
