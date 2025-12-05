@@ -32,9 +32,9 @@ be followed:
 
 1. Copy AWS access credentials from AWS login portal to authenticate with AWS in your terminal
 2. Run `terraform apply` on remote-state to bootstrap the terraform state in your account
-3. Create the `backend.hcl` file inside the stack directory following the example in `backend.hcl.example`
+3. Switch to the `stack` directory. Create the `backend.hcl` file inside the stack directory following the example in `backend.hcl.example`
 4. Run `terraform init "-backend-config=backend.hcl"` to initialize your state, with the proper bucket name
-5. Add the following AWS Systems Manager parameters. the values don't matter; they are only used for auto deployments (see note below). the values themselves will still be set in the .env file locally.
+5. Add the following AWS Systems Manager parameters. Copy the values from the Beta account (excluding `BACKEND_SERVICE_PATH`).
    - GOOGLE_API_KEY (SecureString)
    - GOOGLE_AUTH_KEY (SecureString)
    - DATABASE_URI (SecureString)
@@ -44,9 +44,10 @@ be followed:
 8. [For full-stack testing only] Update the Lambda package so that your CloudFront URL is set as an allowed origin in the CORS configuration.
 9. Build the Lambda package and upload the zip to the  `fryrank-app-lambda-function-bucket-[YOUR_ACCOUNT_ID]`. (Zip file location: `FryRankLambda/build/distributions/FryRankLambda.zip`)
 10. Re-run `terraform apply` with `create_lambdas` set to true to deploy the Lambdas
-11. [For full-stack testing only] Update `BACKEND_SERVICE_PATH` .env var in FryRankFrontend to the API Gateway deployed endpoint and build the frontend (`npm run dev`).
+11. [For full-stack testing only] Update `BACKEND_SERVICE_PATH` .env var in FryRankFrontend to the API Gateway deployed endpoint and build the frontend (`npm run build`).
 12. Upload your frontend to S3 by running the command `aws s3 cp [YOUR_PATH_HERE]/FryRankFrontend/build s3://fryrank-app-spa-bucket-[YOUR_ACCOUNT_ID_HERE]/ --recursive`
-13. Start testing, either via your CloudFront URL or by calling API Gateway directly (from the console or CLI)
+13. Request to have the Cloudfront domain allowlisted in the Google Cloud UI for Google Auth
+14. Start testing, either via your CloudFront URL or by calling API Gateway directly (from the console or CLI)
 
 ### What's not included in the sandbox testing process
 - Right now, the frontend and backend pipelines are not connected to GitHub. The deployments currently take place manually by building locally and uploading the build artifacts to S3, as described above. This may be changed in the future to facilitate the local testing process.
