@@ -34,14 +34,14 @@ be followed:
 2. Run `terraform apply` on remote-state to bootstrap the terraform state in your account
 3. Switch to the `stack` directory. Create the `backend.hcl` file inside the stack directory following the example in `backend.hcl.example`
 4. Run `terraform init "-backend-config=backend.hcl"` to initialize your state, with the proper bucket name
-5. Add the following AWS Systems Manager parameters to the us-west-2 (Oregon) region. Copy the values from the Beta account (excluding `BACKEND_SERVICE_PATH`).
+5. Add the following AWS Systems Manager parameters to the us-west-2 (Oregon) region. Copy the database URI value from the Beta account (the rest don't matter and can be placeholders).
    - GOOGLE_API_KEY (SecureString)
    - GOOGLE_AUTH_KEY (SecureString)
    - DATABASE_URI (SecureString)
    - BACKEND_SERVICE_PATH
 6. Set `create_lambdas` to false in `lambda.tf`.
 7. Run `terraform apply`
-8. [For full-stack testing only] Update the Lambda package so that your CloudFront URL is set as an allowed origin in the CORS configuration.
+8. [For full-stack testing only] Update the Lambda package (filename `Constants.java`) so that your CloudFront URL is set as an allowed origin in the CORS configuration.
 9. Build the Lambda package and upload the zip to the  `fryrank-app-lambda-function-bucket-[YOUR_ACCOUNT_ID]`. (Zip file location: `FryRankLambda/build/distributions/FryRankLambda.zip`)
 10. Re-run `terraform apply` with `create_lambdas` set to true to deploy the Lambdas
 11. [For full-stack testing only] Update `BACKEND_SERVICE_PATH` .env var in FryRankFrontend to the API Gateway deployed endpoint and build the frontend (`npm run build`).
