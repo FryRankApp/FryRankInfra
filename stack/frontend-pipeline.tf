@@ -1,4 +1,5 @@
 resource "aws_codepipeline" "frontend" {
+  count    = local.account_id == "390844755099" ? 1 : 0
   name     = "${local.name}-frontend-deploy-pipeline"
   role_arn = aws_iam_role.frontend_codepipeline_role.arn
 
@@ -18,7 +19,7 @@ resource "aws_codepipeline" "frontend" {
       version          = "1"
       output_artifacts = ["SourceOutput"]
       configuration = {
-        ConnectionArn    = aws_codestarconnections_connection.github.arn
+        ConnectionArn    = aws_codestarconnections_connection.github[0].arn
         FullRepositoryId = "FryRankApp/FryRankFrontend"
         BranchName       = "master"
         DetectChanges    = "true"
@@ -42,4 +43,4 @@ resource "aws_codepipeline" "frontend" {
       }
     }
   }
-} 
+}
