@@ -65,7 +65,7 @@ resource "aws_iam_role_policy" "codepipeline_policy" {
           "codebuild:BatchGetBuilds",
           "codebuild:StartBuild"
         ]
-        Resource = [aws_codebuild_project.lambda_build.arn]
+        Resource = [aws_codebuild_project.lambda_build[0].arn]
       },
       {
         Effect = "Allow"
@@ -130,7 +130,7 @@ resource "aws_codepipeline" "fryrank_lambda_pipeline" {
       output_artifacts = ["build_output"]
 
       configuration = {
-        ProjectName = aws_codebuild_project.lambda_build.name
+        ProjectName = aws_codebuild_project.lambda_build[0].name
       }
     }
   }
