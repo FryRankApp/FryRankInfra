@@ -4,6 +4,8 @@ resource "aws_dynamodb_table" "user_metadata" {
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "accountId"
 
+  deletion_protection_enabled = true
+
   attribute {
     name = "accountId"
     type = "S"
@@ -31,6 +33,8 @@ resource "aws_dynamodb_table" "rankings" {
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "restaurantId"  # Primary partition key
   range_key    = "identifier"   # Primary sort key
+
+  deletion_protection_enabled = true
 
   # Reviews for account
   global_secondary_index {
