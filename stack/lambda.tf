@@ -1,7 +1,7 @@
 variable "create_lambdas" {
   description = "If true, create Lambda functions from the S3 artifact. Set to false to skip creation (useful if the S3 object isn't uploaded yet)."
   type        = bool
-  default     = false
+  default     = true
 }
 
 locals {
