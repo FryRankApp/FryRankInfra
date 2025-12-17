@@ -16,6 +16,7 @@ jobs:
         working-directory: ${{ env.TF_ACTIONS_WORKING_DIR }}
     name: "Terraform Plan"
     runs-on: ubuntu-latest
+    environment: terraform # beta environment
     permissions:
       # so GitHub can check out this repo using the default github.token
       contents: read
