@@ -1,4 +1,4 @@
-name: Terraform Apply (Beta and Prod)
+name: "Terraform Apply (Beta and Prod)"
 
 on:
   push:
