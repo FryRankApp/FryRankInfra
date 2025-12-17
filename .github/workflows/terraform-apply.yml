@@ -1,4 +1,4 @@
-name: Terraform Apply (Beta → Prod)
+name: Terraform Apply (Beta and Prod)
 
 on:
   push:
@@ -8,10 +8,16 @@ on:
 env:
   TF_ACTIONS_WORKING_DIR: "./stack"
 
+permissions:
+  pull-requests: write
+
 jobs:
   apply-beta:
-    name: Apply to Beta
+    name: "Apply to Beta"
     runs-on: ubuntu-latest
+    permissions: # granular permissions
+      # so GitHub can check out this repo using the default github.token
+      contents: read
     environment: terraform # beta environment
 
     defaults:
@@ -22,27 +28,32 @@ jobs:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
 
-      - name: Configure AWS credentials (beta)
+      - name: "Configure AWS credentials (beta)"
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Configure backend
+      - name: "Get AWS Account ID and configure backend"
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          echo "bucket=\"fryrank-app-terraform-state-${ACCOUNT_ID}\"" > backend.hcl
+          BUCKET_NAME="fryrank-app-terraform-state-${ACCOUNT_ID}"
+          echo "Using bucket: $BUCKET_NAME"
+          echo "bucket=\"$BUCKET_NAME\"" >> backend.hcl
 
-      - name: Terraform Init
-        run: terraform init -backend-config=backend.hcl
+      - name: "Terraform Init"
+        run: "terraform init -backend-config=backend.hcl"
 
-      - name: Terraform Apply (beta)
-        run: terraform apply -auto-approve -input=false
+      - name: "Terraform Apply (beta)"
+        run: "terraform apply -auto-approve -input=false"
 
   apply-prod:
-    name: Apply to Prod
+    name: "Apply to Prod"
     runs-on: ubuntu-latest
+    permissions: # granular permissions
+      # so GitHub can check out this repo using the default github.token
+      contents: read
     environment: terraform-prod # prod environment
     needs: apply-beta   # ensures beta finishes first
 
@@ -54,20 +65,22 @@ jobs:
       - uses: actions/checkout@v4
       - uses: hashicorp/setup-terraform@v3
 
-      - name: Configure AWS credentials (prod)
+      - name: "Configure AWS credentials (prod)"
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Configure backend
+      - name: "Get AWS Account ID and configure backend"
         run: |
           ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-          echo "bucket=\"fryrank-app-terraform-state-${ACCOUNT_ID}\"" > backend.hcl
+          BUCKET_NAME="fryrank-app-terraform-state-${ACCOUNT_ID}"
+          echo "Using bucket: $BUCKET_NAME"
+          echo "bucket=\"$BUCKET_NAME\"" >> backend.hcl
 
-      - name: Terraform Init
-        run: terraform init -backend-config=backend.hcl
+      - name: "Terraform Init"
+        run: "terraform init -backend-config=backend.hcl"
 
-      - name: Terraform Apply (prod)
-        run: terraform apply -auto-approve -input=false
+      - name: "Terraform Apply (prod)"
+        run: "terraform apply -auto-approve -input=false"
