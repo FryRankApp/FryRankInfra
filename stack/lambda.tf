@@ -139,6 +139,7 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
   environment {
     variables = {
       "SSM_DATABASE_URI_PARAMETER_KEY" = "DATABASE_URI"
+      "PUBLIC_USER_METADATA_TABLE_NAME" = "fryrank-app-user-metadata"
     }
   }
 }
