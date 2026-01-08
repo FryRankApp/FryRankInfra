@@ -20,10 +20,10 @@ resource "aws_api_gateway_deployment" "fryrank_api" {
   }
 }
 
-resource "aws_api_gateway_stage" "fryrank_api" {
+resource "aws_api_gateway_stage" "fryrank_api_v1" {
   deployment_id = aws_api_gateway_deployment.fryrank_api.id
   rest_api_id   = aws_api_gateway_rest_api.fryrank_api.id
-  stage_name    = "beta"
+  stage_name    = "v1"
 }
 
 resource "aws_api_gateway_usage_plan" "fryrank_api_usage_plan" {
@@ -32,7 +32,7 @@ resource "aws_api_gateway_usage_plan" "fryrank_api_usage_plan" {
 
   api_stages {
     api_id = aws_api_gateway_rest_api.fryrank_api.id
-    stage  = aws_api_gateway_stage.fryrank_api.stage_name
+    stage  = aws_api_gateway_stage.fryrank_api_v1.stage_name
   }
 
   quota_settings {
