@@ -1,3 +1,7 @@
+##################################
+# ACM Certificates
+##################################
+
 # PROD ACM Certificate (only in prod account)
 resource "aws_acm_certificate" "prod" {
   count = local.account_id == "832016013924" ? 1 : 0

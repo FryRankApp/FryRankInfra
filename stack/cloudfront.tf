@@ -1,24 +1,54 @@
+##################################
+# CloudFront Distribution
+##################################
+
+# Local variables for conditional references using map lookups
+locals {
+  # Map aliases per account
+  account_alias_map = {
+    "832016013924" = ["fryrank.app", "www.fryrank.app"]
+    "390844755099" = ["beta.fryrank.app"]
+  }
+  cf_aliases = lookup(local.account_alias_map, local.account_id, [])
+
+  # Map ACM certificates safely using try()
+  account_acm_map = {
+    "832016013924" = try(aws_acm_certificate.prod[0].arn, null)
+    "390844755099" = try(aws_acm_certificate.beta[0].arn, null)
+  }
+  acm_certificate = lookup(local.account_acm_map, local.account_id, null)
+
+  # Map ACM validations safely
+  account_acm_validation_map = {
+    "832016013924" = try(aws_acm_certificate_validation.prod[0], null)
+    "390844755099" = try(aws_acm_certificate_validation.beta[0], null)
+  }
+  acm_validation = lookup(local.account_acm_validation_map, local.account_id, null)
+}
+
 resource "aws_cloudfront_distribution" "spa_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
 
-  # Conditional aliases based on account
-  aliases = local.account_id == "832016013924" ? ["fryrank.app", "www.fryrank.app"] :
-            local.account_id == "390844755099" ? ["beta.fryrank.app"] :
-            []
-
-  tags = local.tags
+  aliases = local.cf_aliases
+  tags    = local.tags
 
   depends_on = [
     aws_s3_bucket.log_bucket,
     aws_s3_bucket_ownership_controls.log_bucket,
     aws_s3_bucket_acl.log_bucket,
     aws_s3_bucket_policy.log_bucket,
-    local.account_id == "832016013924" ? aws_acm_certificate_validation.prod[0] :
-    local.account_id == "390844755099" ? aws_acm_certificate_validation.beta[0] : null
+    local.acm_validation
   ]
+
+  # Configure logging (always enabled)
+  logging_config {
+    bucket          = aws_s3_bucket.log_bucket.bucket_domain_name
+    include_cookies = false
+    prefix          = "cloudfront-logs/"
+  }
 
   origin {
     domain_name              = aws_s3_bucket.spa_bucket.bucket_regional_domain_name
@@ -60,10 +90,25 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   }
 
   viewer_certificate {
-    acm_certificate_arn = local.account_id == "832016013924" ? aws_acm_certificate.prod[0].arn :
-                          local.account_id == "390844755099" ? aws_acm_certificate.beta[0].arn :
-                          null
-    ssl_support_method       = "sni-only"
-    minimum_protocol_version = "TLSv1.2_2021"
+    # Use ACM certificate if it exists; fallback to default certificate if null
+    acm_certificate_arn = local.acm_certificate != null ? local.acm_certificate : null
+    ssl_support_method  = local.acm_certificate != null ? "sni-only" : null
+    minimum_protocol_version = local.acm_certificate != null ? "TLSv1.2_2021" : null
+
+    cloudfront_default_certificate = local.acm_certificate == null ? true : false
   }
+
+}
+
+resource "aws_cloudfront_origin_access_control" "spa_oac" {
+  name                              = "${local.name}-spa-oac"
+  description                       = "OAC for ${local.name} SPA"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+  origin_access_control_origin_type = "s3"
+}
+
+# Output the CloudFront distribution URL
+output "spa_url" {
+  value = "https://${aws_cloudfront_distribution.spa_distribution.domain_name}"
 }
