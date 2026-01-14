@@ -2,6 +2,12 @@ provider "aws" {
   region = local.region
 }
 
+# Provider alias for us-east-1 (required for ACM certificates used by CloudFront)
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+}
+
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
 

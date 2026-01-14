@@ -11,15 +11,18 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   is_ipv6_enabled     = true
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
+  aliases             = local.account_id == "390844755099" ? ["beta.fryrank.app"] : local.account_id == "832016013924" ? ["fryrank.app", "www.fryrank.app"] : []
   tags                = local.tags
 
   # Ensure the S3 log bucket, ownership controls, ACL and policy are created
   # before creating the CloudFront distribution so that CloudFront can write logs.
+  # Also wait for ACM certificate validation to complete.
   depends_on = [
     aws_s3_bucket.log_bucket,
     aws_s3_bucket_ownership_controls.log_bucket,
     aws_s3_bucket_acl.log_bucket,
-    aws_s3_bucket_policy.log_bucket
+    aws_s3_bucket_policy.log_bucket,
+    aws_acm_certificate_validation.fryrank
   ]
 
   # Configure logging (always enabled)
@@ -70,8 +73,9 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
-    minimum_protocol_version       = "TLSv1.2_2021"
+    acm_certificate_arn      = aws_acm_certificate.fryrank.arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 }
 
@@ -86,4 +90,18 @@ resource "aws_cloudfront_origin_access_control" "spa_oac" {
 # Output the CloudFront distribution URL
 output "spa_url" {
   value = "https://${aws_cloudfront_distribution.spa_distribution.domain_name}"
+}
+
+# Output DNS records to add at Porkbun for custom domain
+# Add these as CNAME records pointing to the CloudFront distribution
+output "cloudfront_dns_records" {
+  description = "DNS records to add manually at Porkbun for custom domain aliases"
+  value = {
+    for alias in aws_cloudfront_distribution.spa_distribution.aliases : alias => {
+      type  = "CNAME"
+      name  = alias
+      value = aws_cloudfront_distribution.spa_distribution.domain_name
+      # Add this CNAME record at Porkbun: {name} -> {value}
+    }
+  }
 }
