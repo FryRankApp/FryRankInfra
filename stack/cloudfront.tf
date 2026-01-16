@@ -1,25 +1,46 @@
-# CloudFront distribution (logging always enabled)
-# This file configures the CloudFront distribution and ensures the S3 log bucket
-# resources are created before CloudFront (so CloudFront can write logs).
-#
-# Note: The S3 log bucket and its ownership/ACL/policy are defined in
-# `stack/frontend-s3.tf`. The distribution depends on those resources so that
-# CloudFront logging won't fail due to timing/order issues.
+##################################
+# CloudFront Distribution
+##################################
+
+# Local variables for conditional references using map lookups
+locals {
+  # Map aliases per account
+  account_alias_map = {
+    "832016013924" = ["fryrank.app", "www.fryrank.app"]
+    "390844755099" = ["beta.fryrank.app"]
+  }
+  cf_aliases = lookup(local.account_alias_map, local.account_id, [])
+
+  # Map ACM certificates safely using try()
+  account_acm_map = {
+    "832016013924" = try(aws_acm_certificate.prod[0].arn, null)
+    "390844755099" = try(aws_acm_certificate.beta[0].arn, null)
+  }
+  acm_certificate = lookup(local.account_acm_map, local.account_id, null)
+
+  # Map ACM validations safely
+  account_acm_validation_map = {
+    "832016013924" = try(aws_acm_certificate_validation.prod[0], null)
+    "390844755099" = try(aws_acm_certificate_validation.beta[0], null)
+  }
+  acm_validation = lookup(local.account_acm_validation_map, local.account_id, null)
+}
 
 resource "aws_cloudfront_distribution" "spa_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
-  tags                = local.tags
 
-  # Ensure the S3 log bucket, ownership controls, ACL and policy are created
-  # before creating the CloudFront distribution so that CloudFront can write logs.
+  aliases = local.cf_aliases
+  tags    = local.tags
+
   depends_on = [
     aws_s3_bucket.log_bucket,
     aws_s3_bucket_ownership_controls.log_bucket,
     aws_s3_bucket_acl.log_bucket,
-    aws_s3_bucket_policy.log_bucket
+    aws_s3_bucket_policy.log_bucket,
+    local.acm_validation
   ]
 
   # Configure logging (always enabled)
@@ -38,7 +59,7 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   default_cache_behavior {
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
-    target_origin_id       = "S3Origin" # Match CloudFormation's origin ID
+    target_origin_id       = "S3Origin"
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
 
@@ -50,7 +71,6 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
     }
   }
 
-  # Handle SPA routing by redirecting common error responses to index.html
   custom_error_response {
     error_code         = 403
     response_code      = 200
@@ -70,9 +90,14 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   }
 
   viewer_certificate {
-    cloudfront_default_certificate = true
-    minimum_protocol_version       = "TLSv1.2_2021"
+    # Use ACM certificate if it exists; fallback to default certificate if null
+    acm_certificate_arn = local.acm_certificate != null ? local.acm_certificate : null
+    ssl_support_method  = local.acm_certificate != null ? "sni-only" : null
+    minimum_protocol_version = local.acm_certificate != null ? "TLSv1.2_2021" : null
+
+    cloudfront_default_certificate = local.acm_certificate == null ? true : false
   }
+
 }
 
 resource "aws_cloudfront_origin_access_control" "spa_oac" {
