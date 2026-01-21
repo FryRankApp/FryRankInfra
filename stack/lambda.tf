@@ -136,6 +136,11 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
   description = ""
   timeout     = 15
 
+  # Enable SnapStart for Java functions. SnapStart is applied to published versions.
+  snap_start {
+    apply_on = "PublishedVersions"
+  }
+
   environment {
     variables = {
       "SSM_DATABASE_URI_PARAMETER_KEY" = "DATABASE_URI"
