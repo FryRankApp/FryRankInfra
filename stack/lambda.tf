@@ -143,7 +143,8 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
 
   environment {
     variables = {
-      "SSM_DATABASE_URI_PARAMETER_KEY" = "DATABASE_URI"
+      "SSM_DATABASE_URI_PARAMETER_KEY" = "DATABASE_URI",
+      "SSM_GOOGLE_CLIENT_ID_PARAMETER_KEY" = "GOOGLE_AUTH_KEY"
     }
   }
 }
