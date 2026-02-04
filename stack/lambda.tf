@@ -60,7 +60,8 @@ data "aws_iam_policy_document" "ssm_access_policy_document" {
       "ssm:GetParameter"
     ]
     resources = [
-      data.aws_ssm_parameter.database_uri.arn
+      data.aws_ssm_parameter.database_uri.arn,
+      data.aws_ssm_parameter.google_auth_key.arn
     ]
   }
 }
