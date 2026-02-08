@@ -426,7 +426,7 @@
         "tags": [
           "review-controller"
         ],
-        "operationId": "deleteExistingReviewForRestaurant",
+        "operationId": "deleteReview",
         "parameters": [
           {
             "name": "reviewId",

@@ -22,7 +22,7 @@ locals {
     }
     delete_user_review = {
       name    = "deleteUserReview",
-      handler = "com.fryrank.handler.DeleteExistingReviewForRestaurantHandler"
+      handler = "com.fryrank.handler.DeleteReviewHandler"
     }
     get_aggregate_review_information = {
       name    = "getAggregateReviewInformation",
