@@ -20,6 +20,10 @@ locals {
       name    = "addNewReview",
       handler = "com.fryrank.handler.AddNewReviewForRestaurantHandler"
     }
+    delete_review = {
+      name    = "deleteReview",
+      handler = "com.fryrank.handler.DeleteReviewHandler"
+    }
     get_aggregate_review_information = {
       name    = "getAggregateReviewInformation",
       handler = "com.fryrank.handler.GetAggregateReviewInformationHandler"
