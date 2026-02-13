@@ -65,7 +65,8 @@ data "aws_iam_policy_document" "ssm_access_policy_document" {
     ]
     resources = [
       data.aws_ssm_parameter.database_uri.arn,
-      data.aws_ssm_parameter.google_auth_key.arn
+      data.aws_ssm_parameter.google_auth_key.arn,
+      aws_ssm_parameter.disable_auth.arn
     ]
   }
 }
@@ -148,8 +149,9 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
 
   environment {
     variables = {
-      "SSM_DATABASE_URI_PARAMETER_KEY" = "DATABASE_URI",
-      "SSM_GOOGLE_CLIENT_ID_PARAMETER_KEY" = "GOOGLE_AUTH_KEY"
+      "SSM_DATABASE_URI_PARAMETER_KEY"     = "DATABASE_URI",
+      "SSM_GOOGLE_CLIENT_ID_PARAMETER_KEY" = "GOOGLE_AUTH_KEY",
+      "SSM_DISABLE_AUTH_PARAMETER_KEY"     = "DISABLE_AUTH"
     }
   }
 }
