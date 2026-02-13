@@ -18,7 +18,9 @@ data "aws_ssm_parameter" "backend_service_path" {
   with_decryption = false
 }
 
-data "aws_ssm_parameter" "disable_auth" {
-  name            = "DISABLE_AUTH"
-  with_decryption = false
+resource "aws_ssm_parameter" "disable_auth" {
+  name      = "DISABLE_AUTH"
+  type      = "String"
+  value     = "false"
+  overwrite = false
 }

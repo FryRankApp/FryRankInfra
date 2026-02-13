@@ -66,7 +66,7 @@ data "aws_iam_policy_document" "ssm_access_policy_document" {
     resources = [
       data.aws_ssm_parameter.database_uri.arn,
       data.aws_ssm_parameter.google_auth_key.arn,
-      data.aws_ssm_parameter.disable_auth.arn
+      aws_ssm_parameter.disable_auth.arn
     ]
   }
 }
