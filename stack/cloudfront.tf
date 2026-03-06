@@ -57,18 +57,13 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   }
 
   default_cache_behavior {
+    cache_policy_id = data.aws_cloudfront_cache_policy.optimized.id 
+
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
     target_origin_id       = "S3Origin"
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
-
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = "none"
-      }
-    }
   }
 
   custom_error_response {

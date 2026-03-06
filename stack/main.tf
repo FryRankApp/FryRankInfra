@@ -11,6 +11,12 @@ provider "aws" {
 # Get current AWS account ID
 data "aws_caller_identity" "current" {}
 
+# This policy is pre-configured by AWS to maximize caching and ignore headers/queries
+# https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/using-managed-cache-policies.html#managed-cache-caching-optimized
+data "aws_cloudfront_cache_policy" "optimized" {
+  name = "Managed-CachingOptimized"
+}
+
 locals {
   name       = "fryrank-app"
   region     = "us-west-2"
