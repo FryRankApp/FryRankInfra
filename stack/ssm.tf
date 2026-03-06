@@ -23,4 +23,8 @@ resource "aws_ssm_parameter" "disable_auth" {
   type      = "String"
   value     = "false"
   overwrite = false
+
+  lifecycle {
+    ignore_changes = [value]
+  }
 }
