@@ -54,11 +54,6 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
     domain_name              = aws_s3_bucket.spa_bucket.bucket_regional_domain_name
     origin_id                = "S3Origin"
     origin_access_control_id = aws_cloudfront_origin_access_control.spa_oac.id
-
-    origin_shield {
-      enabled              = true
-      origin_shield_region = local.region
-    }
   }
 
   default_cache_behavior {
