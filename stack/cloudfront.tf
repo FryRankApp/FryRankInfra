@@ -43,13 +43,6 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
     local.acm_validation
   ]
 
-  # Configure logging (always enabled)
-  logging_config {
-    bucket          = aws_s3_bucket.log_bucket.bucket_domain_name
-    include_cookies = false
-    prefix          = "cloudfront-logs/"
-  }
-
   origin {
     domain_name              = aws_s3_bucket.spa_bucket.bucket_regional_domain_name
     origin_id                = "S3Origin"
