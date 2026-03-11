@@ -8,6 +8,7 @@ resource "aws_s3_bucket" "spa_bucket" {
 resource "aws_s3_bucket" "log_bucket" {
   bucket = "${local.name}-spa-logs-${local.account_id}"
   tags   = local.tags
+  force_destroy = true
 }
 
 # Configure bucket ownership controls to allow ACLs
