@@ -55,10 +55,6 @@ echo "CloudFront Distribution ID: ${DIST_ID}"
 echo "Web ACL ARN: ${WEB_ACL_ARN}"
 echo "Web ACL ID: ${WEB_ACL_ID}"
 
-export CLOUDFRONT_WEB_ACL_ARN="${WEB_ACL_ARN}"
-export CLOUDFRONT_WEB_ACL_ID="${WEB_ACL_ID}"
-export CLOUDFRONT_WEB_ACL_NAME="${WEB_ACL_NAME}"
-
 export TF_VAR_cloudfront_web_acl_arn="${WEB_ACL_ARN}"
 export TF_VAR_cloudfront_web_acl_name="${WEB_ACL_NAME}"
 

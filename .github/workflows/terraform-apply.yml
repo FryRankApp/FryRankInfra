@@ -92,9 +92,6 @@ jobs:
             exit 1
           fi
 
-          echo "CLOUDFRONT_WEB_ACL_ARN=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
-          echo "CLOUDFRONT_WEB_ACL_ID=${WEB_ACL_ID}" >> "$GITHUB_ENV"
-          echo "CLOUDFRONT_WEB_ACL_NAME=${WEB_ACL_NAME}" >> "$GITHUB_ENV"
           echo "TF_VAR_cloudfront_web_acl_arn=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
           echo "TF_VAR_cloudfront_web_acl_name=${WEB_ACL_NAME}" >> "$GITHUB_ENV"
 
@@ -104,7 +101,10 @@ jobs:
           if terraform state list aws_wafv2_web_acl.cloudfront_web_acl >/dev/null 2>&1; then
             echo "Web ACL already imported, skipping import step."
           else
-            terraform import aws_wafv2_web_acl.cloudfront_web_acl "${CLOUDFRONT_WEB_ACL_ID}/${CLOUDFRONT_WEB_ACL_NAME}/CLOUDFRONT"
+            WEB_ACL_ARN="${TF_VAR_cloudfront_web_acl_arn}"
+            WEB_ACL_ID="${WEB_ACL_ARN##*/}"
+            WEB_ACL_NAME="${TF_VAR_cloudfront_web_acl_name}"
+            terraform import aws_wafv2_web_acl.cloudfront_web_acl "${WEB_ACL_ID}/${WEB_ACL_NAME}/CLOUDFRONT"
           fi
 
       - name: "Terraform Apply (beta)"
@@ -191,9 +191,6 @@ jobs:
             exit 1
           fi
 
-          echo "CLOUDFRONT_WEB_ACL_ARN=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
-          echo "CLOUDFRONT_WEB_ACL_ID=${WEB_ACL_ID}" >> "$GITHUB_ENV"
-          echo "CLOUDFRONT_WEB_ACL_NAME=${WEB_ACL_NAME}" >> "$GITHUB_ENV"
           echo "TF_VAR_cloudfront_web_acl_arn=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
           echo "TF_VAR_cloudfront_web_acl_name=${WEB_ACL_NAME}" >> "$GITHUB_ENV"
 
@@ -203,7 +200,10 @@ jobs:
           if terraform state list aws_wafv2_web_acl.cloudfront_web_acl >/dev/null 2>&1; then
             echo "Web ACL already imported, skipping import step."
           else
-            terraform import aws_wafv2_web_acl.cloudfront_web_acl "${CLOUDFRONT_WEB_ACL_ID}/${CLOUDFRONT_WEB_ACL_NAME}/CLOUDFRONT"
+            WEB_ACL_ARN="${TF_VAR_cloudfront_web_acl_arn}"
+            WEB_ACL_ID="${WEB_ACL_ARN##*/}"
+            WEB_ACL_NAME="${TF_VAR_cloudfront_web_acl_name}"
+            terraform import aws_wafv2_web_acl.cloudfront_web_acl "${WEB_ACL_ID}/${WEB_ACL_NAME}/CLOUDFRONT"
           fi
 
       - name: "Terraform Apply (prod)"

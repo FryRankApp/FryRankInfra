@@ -58,10 +58,6 @@ if "%WEB_ACL_ID%"=="" (
     goto :cleanup
 )
 
-set CLOUDFRONT_WEB_ACL_ARN=%WEB_ACL_ARN%
-set CLOUDFRONT_WEB_ACL_ID=%WEB_ACL_ID%
-set CLOUDFRONT_WEB_ACL_NAME=%WEB_ACL_NAME%
-
 rem Terraform picks up input variables from environment variables prefixed with TF_VAR_
 set "TF_VAR_cloudfront_web_acl_arn=%WEB_ACL_ARN%"
 set "TF_VAR_cloudfront_web_acl_name=%WEB_ACL_NAME%"
