@@ -87,6 +87,11 @@ jobs:
           WEB_ACL_NAME="${WEB_ACL_ARN%/*}"
           WEB_ACL_NAME="${WEB_ACL_NAME##*/}"
 
+          if [ -z "${WEB_ACL_ID}" ] || [ -z "${WEB_ACL_NAME}" ] || [ "${WEB_ACL_ID}" = "${WEB_ACL_ARN}" ]; then
+            echo "Could not parse Web ACL name/ID from ARN: ${WEB_ACL_ARN}"
+            exit 1
+          fi
+
           echo "CLOUDFRONT_WEB_ACL_ARN=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
           echo "CLOUDFRONT_WEB_ACL_ID=${WEB_ACL_ID}" >> "$GITHUB_ENV"
           echo "CLOUDFRONT_WEB_ACL_NAME=${WEB_ACL_NAME}" >> "$GITHUB_ENV"
@@ -180,6 +185,11 @@ jobs:
           WEB_ACL_ID="${WEB_ACL_ARN##*/}"
           WEB_ACL_NAME="${WEB_ACL_ARN%/*}"
           WEB_ACL_NAME="${WEB_ACL_NAME##*/}"
+
+          if [ -z "${WEB_ACL_ID}" ] || [ -z "${WEB_ACL_NAME}" ] || [ "${WEB_ACL_ID}" = "${WEB_ACL_ARN}" ]; then
+            echo "Could not parse Web ACL name/ID from ARN: ${WEB_ACL_ARN}"
+            exit 1
+          fi
 
           echo "CLOUDFRONT_WEB_ACL_ARN=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
           echo "CLOUDFRONT_WEB_ACL_ID=${WEB_ACL_ID}" >> "$GITHUB_ENV"

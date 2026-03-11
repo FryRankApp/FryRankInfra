@@ -46,6 +46,11 @@ WEB_ACL_ID="${WEB_ACL_ARN##*/}"
 WEB_ACL_NAME="${WEB_ACL_ARN%/*}"
 WEB_ACL_NAME="${WEB_ACL_NAME##*/}"
 
+if [ -z "${WEB_ACL_ID}" ] || [ -z "${WEB_ACL_NAME}" ] || [ "${WEB_ACL_ID}" = "${WEB_ACL_ARN}" ]; then
+    echo "Could not parse Web ACL name/ID from ARN: ${WEB_ACL_ARN}"
+    exit 1
+fi
+
 echo "CloudFront Distribution ID: ${DIST_ID}"
 echo "Web ACL ARN: ${WEB_ACL_ARN}"
 echo "Web ACL ID: ${WEB_ACL_ID}"
