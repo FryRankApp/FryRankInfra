@@ -28,6 +28,11 @@ be followed:
     - In your sandbox account, this will apply the changes to your infrastructure.
     - To apply the changes to the Beta account, merge the PR in GitHub
 
+### Helper scripts
+From the repo root, `deploy.sh` / `deploy.bat` will auto-discover the CloudFront Web ACL ARN, export `TF_VAR_cloudfront_web_acl_arn`, and then run Terraform:
+- Plan: `./deploy.sh --plan` or `deploy.bat --plan`
+- Apply: `./deploy.sh --apply` or `deploy.bat --apply` (default)
+
 ## Steps to set up your sandbox account
 
 1. Copy AWS access credentials from AWS login portal to authenticate with AWS in your terminal

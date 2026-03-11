@@ -45,6 +45,45 @@ jobs:
       - name: "Terraform Init"
         run: "terraform init -backend-config=backend.hcl"
 
+      - name: "Discover CloudFront Web ACL (beta)"
+        run: |
+          set -euo pipefail
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          
+          # Find the CloudFront distribution tagged with value 'fryrank-app'
+          DIST_ID=""
+          for dist_id in $(aws cloudfront list-distributions --query "DistributionList.Items[].Id" --output text); do
+            tag_key=$(aws cloudfront list-tags-for-resource --resource "arn:aws:cloudfront::${ACCOUNT_ID}:distribution/${dist_id}" --query "Tags.Items[?Value==\`fryrank-app\`].Key" --output text)
+            if [ -n "$tag_key" ]; then
+              DIST_ID="$dist_id"
+              break
+            fi
+          done
+          
+          if [ -z "${DIST_ID}" ]; then
+            echo "No CloudFront distribution found for this account. Please run terraform apply first to create the distribution."
+            exit 1
+          fi
+          
+          # Prefer the Web ACL already attached to the distribution (avoids picking the wrong one).
+          WEB_ACL_ARN=""
+          DIST_WEB_ACL="$(aws cloudfront get-distribution-config --id "${DIST_ID}" --query "DistributionConfig.WebACLId" --output text)"
+          if [[ "${DIST_WEB_ACL}" != "None" && "${DIST_WEB_ACL}" != "null" && -n "${DIST_WEB_ACL}" ]]; then
+            WEB_ACL_ARN="${DIST_WEB_ACL}"
+          else
+            WEB_ACL_ARN="$(aws wafv2 list-web-acls --region us-east-1 --scope CLOUDFRONT --query "WebACLs[?starts_with(Name, \`CreatedByCloudFront\`)] | [0].ARN" --output text)"
+            if [[ "${WEB_ACL_ARN}" == "None" || "${WEB_ACL_ARN}" == "null" ]]; then
+              WEB_ACL_ARN=""
+            fi
+          fi
+
+          if [ -z "${WEB_ACL_ARN}" ]; then
+            echo "Could not determine a Web ACL for the CloudFront distribution."
+            exit 1
+          fi
+
+          echo "TF_VAR_cloudfront_web_acl_arn=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
+
       - name: "Terraform Apply (beta)"
         run: "terraform apply -auto-approve -input=false"
 
@@ -81,6 +120,45 @@ jobs:
 
       - name: "Terraform Init"
         run: "terraform init -backend-config=backend.hcl"
+
+      - name: "Discover CloudFront Web ACL (prod)"
+        run: |
+          set -euo pipefail
+          ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+          
+          # Find the CloudFront distribution tagged with value 'fryrank-app'
+          DIST_ID=""
+          for dist_id in $(aws cloudfront list-distributions --query "DistributionList.Items[].Id" --output text); do
+            tag_key=$(aws cloudfront list-tags-for-resource --resource "arn:aws:cloudfront::${ACCOUNT_ID}:distribution/${dist_id}" --query "Tags.Items[?Value==\`fryrank-app\`].Key" --output text)
+            if [ -n "$tag_key" ]; then
+              DIST_ID="$dist_id"
+              break
+            fi
+          done
+          
+          if [ -z "${DIST_ID}" ]; then
+            echo "No CloudFront distribution found for this account. Please run terraform apply first to create the distribution."
+            exit 1
+          fi
+          
+          # Prefer the Web ACL already attached to the distribution (avoids picking the wrong one).
+          WEB_ACL_ARN=""
+          DIST_WEB_ACL="$(aws cloudfront get-distribution-config --id "${DIST_ID}" --query "DistributionConfig.WebACLId" --output text)"
+          if [[ "${DIST_WEB_ACL}" != "None" && "${DIST_WEB_ACL}" != "null" && -n "${DIST_WEB_ACL}" ]]; then
+            WEB_ACL_ARN="${DIST_WEB_ACL}"
+          else
+            WEB_ACL_ARN="$(aws wafv2 list-web-acls --region us-east-1 --scope CLOUDFRONT --query "WebACLs[?starts_with(Name, \`CreatedByCloudFront\`)] | [0].ARN" --output text)"
+            if [[ "${WEB_ACL_ARN}" == "None" || "${WEB_ACL_ARN}" == "null" ]]; then
+              WEB_ACL_ARN=""
+            fi
+          fi
+
+          if [ -z "${WEB_ACL_ARN}" ]; then
+            echo "Could not determine a Web ACL for the CloudFront distribution."
+            exit 1
+          fi
+
+          echo "TF_VAR_cloudfront_web_acl_arn=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
 
       - name: "Terraform Apply (prod)"
         run: "terraform apply -auto-approve -input=false"
