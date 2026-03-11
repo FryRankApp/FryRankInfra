@@ -36,19 +36,8 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   tags    = local.tags
 
   depends_on = [
-    aws_s3_bucket.log_bucket,
-    aws_s3_bucket_ownership_controls.log_bucket,
-    aws_s3_bucket_acl.log_bucket,
-    aws_s3_bucket_policy.log_bucket,
     local.acm_validation
   ]
-
-  # Configure logging (always enabled)
-  logging_config {
-    bucket          = aws_s3_bucket.log_bucket.bucket_domain_name
-    include_cookies = false
-    prefix          = "cloudfront-logs/"
-  }
 
   origin {
     domain_name              = aws_s3_bucket.spa_bucket.bucket_regional_domain_name

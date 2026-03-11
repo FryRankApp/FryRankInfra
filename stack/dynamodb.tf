@@ -107,6 +107,7 @@ data "aws_iam_policy_document" "dynamodb_access_policy_document" {
       "dynamodb:GetItem",
       "dynamodb:PutItem",
       "dynamodb:UpdateItem",
+      "dynamodb:DeleteItem",
       "dynamodb:Query",
       "dynamodb:Scan",
       "dynamodb:BatchGetItem",
