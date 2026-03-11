@@ -4,6 +4,43 @@ setlocal enabledelayedexpansion
 pushd "%~dp0stack" || exit /b 1
 set "EXIT_CODE=0"
 
+set "TF_ACTION="
+set "TF_EXTRA_ARGS="
+
+:parse_args
+if "%~1"=="" goto :args_done
+if /i "%~1"=="--help" goto :usage
+if /i "%~1"=="-h" goto :usage
+
+if /i "%~1"=="--plan" (
+    if defined TF_ACTION if /i not "%TF_ACTION%"=="plan" goto :conflicting_action
+    set "TF_ACTION=plan"
+) else if /i "%~1"=="--apply" (
+    if defined TF_ACTION if /i not "%TF_ACTION%"=="apply" goto :conflicting_action
+    set "TF_ACTION=apply"
+) else (
+    if "%~1:~0,2%"=="--" (
+        echo Unknown flag: %~1
+        set "EXIT_CODE=1"
+        goto :usage
+    )
+    if defined TF_EXTRA_ARGS (
+        set "TF_EXTRA_ARGS=!TF_EXTRA_ARGS! %1"
+    ) else (
+        set "TF_EXTRA_ARGS=%1"
+    )
+)
+shift
+goto :parse_args
+
+:conflicting_action
+echo Error: cannot specify both --plan and --apply.
+set "EXIT_CODE=2"
+goto :usage
+
+:args_done
+if not defined TF_ACTION set "TF_ACTION=apply"
+
 echo Getting AWS account ID and CloudFront distribution information...
 
 for /f "tokens=*" %%i in ('aws sts get-caller-identity --query Account --output text') do set ACCOUNT_ID=%%i
@@ -53,9 +90,16 @@ set "TF_VAR_cloudfront_web_acl_arn=%WEB_ACL_ARN%"
 
 echo TF_VAR_cloudfront_web_acl_arn=%WEB_ACL_ARN%
 
-echo Running terraform apply...
-terraform apply
+echo Running terraform %TF_ACTION% %TF_EXTRA_ARGS%...
+terraform %TF_ACTION% %TF_EXTRA_ARGS%
 
 :cleanup
 popd
 exit /b %EXIT_CODE%
+
+:usage
+echo Usage: deploy.bat [--plan^|--apply] [terraform args...]
+echo.
+echo   --plan   Run terraform plan
+echo   --apply  Run terraform apply (default)
+goto :cleanup

@@ -2,6 +2,48 @@
 
 set -euo pipefail
 
+usage() {
+  cat <<'EOF'
+Usage: ./deploy.sh [--plan|--apply] [terraform args...]
+
+  --plan   Run terraform plan
+  --apply  Run terraform apply (default)
+EOF
+}
+
+ACTION="apply"
+ACTION_SET=""
+TERRAFORM_ARGS=()
+for arg in "$@"; do
+  case "${arg}" in
+    --help|-h)
+      usage
+      exit 0
+      ;;
+    --plan)
+      if [[ -n "${ACTION_SET}" && "${ACTION}" != "plan" ]]; then
+        echo "Error: cannot specify both --plan and --apply." >&2
+        usage >&2
+        exit 2
+      fi
+      ACTION="plan"
+      ACTION_SET="1"
+      ;;
+    --apply)
+      if [[ -n "${ACTION_SET}" && "${ACTION}" != "apply" ]]; then
+        echo "Error: cannot specify both --plan and --apply." >&2
+        usage >&2
+        exit 2
+      fi
+      ACTION="apply"
+      ACTION_SET="1"
+      ;;
+    *)
+      TERRAFORM_ARGS+=("${arg}")
+      ;;
+  esac
+done
+
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 pushd "${SCRIPT_DIR}/stack" >/dev/null
 trap 'popd >/dev/null || true' EXIT
@@ -48,5 +90,5 @@ export TF_VAR_cloudfront_web_acl_arn="${WEB_ACL_ARN}"
 
 echo "TF_VAR_cloudfront_web_acl_arn=${WEB_ACL_ARN}"
 
-echo "Running terraform apply..."
-terraform apply
+echo "Running terraform ${ACTION}..."
+terraform "${ACTION}" "${TERRAFORM_ARGS[@]}"
