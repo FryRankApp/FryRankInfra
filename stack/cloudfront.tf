@@ -30,10 +30,13 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   enabled             = true
   is_ipv6_enabled     = true
   default_root_object = "index.html"
-  price_class         = "PriceClass_100"
+  price_class         = "PriceClass_All"
 
   aliases = local.cf_aliases
   tags    = local.tags
+
+  # Use the CloudFront-created Web ACL discovered by deployment scripts
+  web_acl_id = var.cloudfront_web_acl_arn != "" ? var.cloudfront_web_acl_arn : null
 
   depends_on = [
     local.acm_validation
