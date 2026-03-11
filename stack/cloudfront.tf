@@ -36,10 +36,6 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   tags    = local.tags
 
   depends_on = [
-    aws_s3_bucket.log_bucket,
-    aws_s3_bucket_ownership_controls.log_bucket,
-    aws_s3_bucket_acl.log_bucket,
-    aws_s3_bucket_policy.log_bucket,
     local.acm_validation
   ]
 
