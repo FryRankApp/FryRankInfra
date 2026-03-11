@@ -25,9 +25,7 @@ if "%DIST_ID%"=="" (
     goto :cleanup
 )
 
-set "WEB_ACL_NAME="
 set "WEB_ACL_ARN="
-set "WEB_ACL_ID="
 
 rem Prefer the Web ACL already attached to the distribution (avoids picking the wrong one).
 set "DIST_WEB_ACL="
@@ -41,18 +39,10 @@ if /i not "%DIST_WEB_ACL%"=="None" if /i not "%DIST_WEB_ACL%"=="null" if not "%D
     if /i "%WEB_ACL_ARN%"=="null" set "WEB_ACL_ARN="
 )
 
-rem Derive name + ID from the ARN (arn:.../webacl/<name>/<id>)
-if not "%WEB_ACL_ARN%"=="" (
-    for /f "tokens=3,4 delims=/" %%a in ("%WEB_ACL_ARN%") do (
-        set "WEB_ACL_NAME=%%a"
-        set "WEB_ACL_ID=%%b"
-    )
-)
-
 echo CloudFront Distribution ID: %DIST_ID%
 echo Web ACL ARN: %WEB_ACL_ARN%
 
-if "%WEB_ACL_ID%"=="" (
+if "%WEB_ACL_ARN%"=="" (
     echo Could not determine a Web ACL for the CloudFront distribution.
     set "EXIT_CODE=1"
     goto :cleanup
@@ -60,18 +50,8 @@ if "%WEB_ACL_ID%"=="" (
 
 rem Terraform picks up input variables from environment variables prefixed with TF_VAR_
 set "TF_VAR_cloudfront_web_acl_arn=%WEB_ACL_ARN%"
-set "TF_VAR_cloudfront_web_acl_name=%WEB_ACL_NAME%"
 
 echo TF_VAR_cloudfront_web_acl_arn=%WEB_ACL_ARN%
-echo TF_VAR_cloudfront_web_acl_name=%WEB_ACL_NAME%
-
-echo "Importing Web ACL into Terraform state..."
-terraform state list aws_wafv2_web_acl.cloudfront_web_acl >nul 2>&1
-if errorlevel 1 (
-    terraform import aws_wafv2_web_acl.cloudfront_web_acl "%WEB_ACL_ID%/%WEB_ACL_NAME%/CLOUDFRONT"
-) else (
-    echo "Web ACL already imported, skipping import step."
-)
 
 echo Running terraform apply...
 terraform apply

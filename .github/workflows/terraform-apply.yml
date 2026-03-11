@@ -82,30 +82,7 @@ jobs:
             exit 1
           fi
 
-          # arn:.../webacl/<name>/<id>
-          WEB_ACL_ID="${WEB_ACL_ARN##*/}"
-          WEB_ACL_NAME="${WEB_ACL_ARN%/*}"
-          WEB_ACL_NAME="${WEB_ACL_NAME##*/}"
-
-          if [ -z "${WEB_ACL_ID}" ] || [ -z "${WEB_ACL_NAME}" ] || [ "${WEB_ACL_ID}" = "${WEB_ACL_ARN}" ]; then
-            echo "Could not parse Web ACL name/ID from ARN: ${WEB_ACL_ARN}"
-            exit 1
-          fi
-
           echo "TF_VAR_cloudfront_web_acl_arn=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
-          echo "TF_VAR_cloudfront_web_acl_name=${WEB_ACL_NAME}" >> "$GITHUB_ENV"
-
-      - name: "Import CloudFront Web ACL into state (beta, if needed)"
-        run: |
-          set -euo pipefail
-          if terraform state list aws_wafv2_web_acl.cloudfront_web_acl >/dev/null 2>&1; then
-            echo "Web ACL already imported, skipping import step."
-          else
-            WEB_ACL_ARN="${TF_VAR_cloudfront_web_acl_arn}"
-            WEB_ACL_ID="${WEB_ACL_ARN##*/}"
-            WEB_ACL_NAME="${TF_VAR_cloudfront_web_acl_name}"
-            terraform import aws_wafv2_web_acl.cloudfront_web_acl "${WEB_ACL_ID}/${WEB_ACL_NAME}/CLOUDFRONT"
-          fi
 
       - name: "Terraform Apply (beta)"
         run: "terraform apply -auto-approve -input=false"
@@ -181,30 +158,7 @@ jobs:
             exit 1
           fi
 
-          # arn:.../webacl/<name>/<id>
-          WEB_ACL_ID="${WEB_ACL_ARN##*/}"
-          WEB_ACL_NAME="${WEB_ACL_ARN%/*}"
-          WEB_ACL_NAME="${WEB_ACL_NAME##*/}"
-
-          if [ -z "${WEB_ACL_ID}" ] || [ -z "${WEB_ACL_NAME}" ] || [ "${WEB_ACL_ID}" = "${WEB_ACL_ARN}" ]; then
-            echo "Could not parse Web ACL name/ID from ARN: ${WEB_ACL_ARN}"
-            exit 1
-          fi
-
           echo "TF_VAR_cloudfront_web_acl_arn=${WEB_ACL_ARN}" >> "$GITHUB_ENV"
-          echo "TF_VAR_cloudfront_web_acl_name=${WEB_ACL_NAME}" >> "$GITHUB_ENV"
-
-      - name: "Import CloudFront Web ACL into state (prod, if needed)"
-        run: |
-          set -euo pipefail
-          if terraform state list aws_wafv2_web_acl.cloudfront_web_acl >/dev/null 2>&1; then
-            echo "Web ACL already imported, skipping import step."
-          else
-            WEB_ACL_ARN="${TF_VAR_cloudfront_web_acl_arn}"
-            WEB_ACL_ID="${WEB_ACL_ARN##*/}"
-            WEB_ACL_NAME="${TF_VAR_cloudfront_web_acl_name}"
-            terraform import aws_wafv2_web_acl.cloudfront_web_acl "${WEB_ACL_ID}/${WEB_ACL_NAME}/CLOUDFRONT"
-          fi
 
       - name: "Terraform Apply (prod)"
         run: "terraform apply -auto-approve -input=false"

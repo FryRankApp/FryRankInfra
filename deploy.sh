@@ -41,32 +41,12 @@ if [ -z "${WEB_ACL_ARN}" ]; then
     exit 1
 fi
 
-# arn:.../webacl/<name>/<id>
-WEB_ACL_ID="${WEB_ACL_ARN##*/}"
-WEB_ACL_NAME="${WEB_ACL_ARN%/*}"
-WEB_ACL_NAME="${WEB_ACL_NAME##*/}"
-
-if [ -z "${WEB_ACL_ID}" ] || [ -z "${WEB_ACL_NAME}" ] || [ "${WEB_ACL_ID}" = "${WEB_ACL_ARN}" ]; then
-    echo "Could not parse Web ACL name/ID from ARN: ${WEB_ACL_ARN}"
-    exit 1
-fi
-
 echo "CloudFront Distribution ID: ${DIST_ID}"
 echo "Web ACL ARN: ${WEB_ACL_ARN}"
-echo "Web ACL ID: ${WEB_ACL_ID}"
 
 export TF_VAR_cloudfront_web_acl_arn="${WEB_ACL_ARN}"
-export TF_VAR_cloudfront_web_acl_name="${WEB_ACL_NAME}"
 
 echo "TF_VAR_cloudfront_web_acl_arn=${WEB_ACL_ARN}"
-echo "TF_VAR_cloudfront_web_acl_name=${WEB_ACL_NAME}"
-
-echo "Importing Web ACL into Terraform state..."
-if terraform state list aws_wafv2_web_acl.cloudfront_web_acl >/dev/null 2>&1; then
-    echo "Web ACL already imported, skipping import step."
-else
-    terraform import aws_wafv2_web_acl.cloudfront_web_acl "${WEB_ACL_ID}/${WEB_ACL_NAME}/CLOUDFRONT"
-fi
 
 echo "Running terraform apply..."
 terraform apply
