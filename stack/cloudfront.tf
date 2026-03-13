@@ -49,7 +49,7 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
   }
 
   default_cache_behavior {
-    cache_policy_id = data.aws_cloudfront_cache_policy.optimized.id 
+    cache_policy_id = data.aws_cloudfront_cache_policy.optimized.id
 
     allowed_methods        = ["GET", "HEAD", "OPTIONS"]
     cached_methods         = ["GET", "HEAD"]
@@ -78,8 +78,8 @@ resource "aws_cloudfront_distribution" "spa_distribution" {
 
   viewer_certificate {
     # Use ACM certificate if it exists; fallback to default certificate if null
-    acm_certificate_arn = local.acm_certificate != null ? local.acm_certificate : null
-    ssl_support_method  = local.acm_certificate != null ? "sni-only" : null
+    acm_certificate_arn      = local.acm_certificate != null ? local.acm_certificate : null
+    ssl_support_method       = local.acm_certificate != null ? "sni-only" : null
     minimum_protocol_version = local.acm_certificate != null ? "TLSv1.2_2021" : null
 
     cloudfront_default_certificate = local.acm_certificate == null ? true : false
