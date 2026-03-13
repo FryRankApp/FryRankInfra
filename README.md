@@ -2,10 +2,11 @@
 Terraform-defined infrastructure for FryRank.
 
 ## Getting Started
-All infrastructure is managed by Github Actions only to prevent local development testing from
-interfering with existing infrastructure since the state is stored in s3. All developers must use
-the `TerraformDev` IAM credentials to authenticate which allows for the use of `terraform plan` but
-not `terraform apply`.
+Shared environments are managed by GitHub Actions to prevent local development from interfering with existing infrastructure (state is stored in S3).
+
+For sandbox testing / local iteration, use the repo helper scripts (`deploy.sh` / `deploy.bat`) rather than running `terraform plan` / `terraform apply` directly. The scripts handle required environment variables and let you pass through Terraform flags (like `-auto-approve`).
+
+Note: `TerraformDev` IAM credentials allow `terraform plan` but not `terraform apply`. For sandbox applies you may need an admin role.
 
 ## First time startup instructions
 Since we use s3 to store the terraform state, but we need the s3 bucket to access the state to run terraform, this is a
@@ -16,22 +17,16 @@ be followed:
 3. Run `terraform plan`
 4. After the code is merged, `terraform apply` will automatically be run to apply the changes.
 
-## How to Run Terraform
-1. Obtain AWS access key and secret access key for your sandbox account from the AWS Log In portal. Export `AWS_ACCESS_KEY_ID` and
-`AWS_SECRET_ACCESS_KEY` respectively. This will allow your local instance of terraform to access the account.
-2. Run `terraform init` to initialize the Terraform configuration.
-3. Run `terraform get` to download the necessary modules after a new module is added.
-4. `terraform plan`:
-    - In your sandbox account, this will show the changes to be made to your infrastructure.
-    - To see the changes to be made to the Beta account, create the PR in GitHub
-5. `terraform apply`:
-    - In your sandbox account, this will apply the changes to your infrastructure.
-    - To apply the changes to the Beta account, merge the PR in GitHub
+## Deploying Infrastructure (Recommended)
+1. Obtain AWS access key and secret access key for your sandbox account from the AWS Log In portal. Export `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`.
+2. Use the helper scripts from the repo root:
+   - Plan: `./deploy.sh --plan` or `deploy.bat --plan`
+   - Apply: `./deploy.sh --apply` or `deploy.bat --apply` (default)
+   - Passing Terraform args: `./deploy.sh --apply -auto-approve`
 
-### Helper scripts
-From the repo root, `deploy.sh` / `deploy.bat` will auto-discover the CloudFront Web ACL ARN, export `TF_VAR_cloudfront_web_acl_arn`, and then run Terraform:
-- Plan: `./deploy.sh --plan` or `deploy.bat --plan`
-- Apply: `./deploy.sh --apply` or `deploy.bat --apply` (default)
+For Beta/Prod, use GitHub (open a PR to view a plan; merge to apply).
+
+`deploy.sh` / `deploy.bat` auto-discover the CloudFront Web ACL ARN, export `TF_VAR_cloudfront_web_acl_arn`, and then run Terraform.
 
 ## Steps to set up your sandbox account
 
@@ -45,10 +40,10 @@ From the repo root, `deploy.sh` / `deploy.bat` will auto-discover the CloudFront
    - DATABASE_URI (SecureString)
    - BACKEND_SERVICE_PATH (String)
 6. Set `create_lambdas` to false in `lambda.tf`.
-7. Run `terraform apply`
+7. From the repo root, deploy the stack with `./deploy.sh --apply` (or `deploy.bat --apply`). You may need `deploy.sh --apply -auto-approve` / `./deploy.sh --apply -auto-approve` depending on how you run the script.
 8. [For full-stack testing only] Update the Lambda package (filename `Constants.java`) so that your CloudFront URL is set as an allowed origin in the CORS configuration.
 9. Build the Lambda package and upload the zip to the  `fryrank-app-lambda-function-bucket-[YOUR_ACCOUNT_ID]`. (Zip file location: `FryRankLambda/build/distributions/FryRankLambda.zip`)
-10. Re-run `terraform apply` with `create_lambdas` set to true to deploy the Lambdas
+10. Re-run `./deploy.sh --apply` (or `deploy.bat --apply`) with `create_lambdas` set to true to deploy the Lambdas
 11. [For full-stack testing only] Update `BACKEND_SERVICE_PATH` .env var in FryRankFrontend to the API Gateway deployed endpoint and build the frontend (`npm run build`).
 12. Upload your frontend to S3 by running the command `aws s3 cp [YOUR_PATH_HERE]/FryRankFrontend/build s3://fryrank-app-spa-bucket-[YOUR_ACCOUNT_ID_HERE]/ --recursive`
 13. Request to have the Cloudfront domain allowlisted in the Google Cloud UI for Google Auth

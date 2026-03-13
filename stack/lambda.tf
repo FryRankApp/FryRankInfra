@@ -100,6 +100,27 @@ resource "aws_iam_role_policy" "logging_policy" {
   })
 }
 
+resource "aws_iam_role_policy" "xray_write_policy" {
+  name = "lambda-xray"
+  role = aws_iam_role.lambda_execution_role.name
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "xray:PutTraceSegments",
+          "xray:PutTelemetryRecords",
+          "xray:GetSamplingRules",
+          "xray:GetSamplingTargets",
+          "xray:GetSamplingStatisticSummaries"
+        ],
+        "Resource" : "*"
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy" "ssm_access_policy" {
   role   = aws_iam_role.lambda_execution_role.id
   policy = data.aws_iam_policy_document.ssm_access_policy_document.json
@@ -141,6 +162,10 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
   runtime     = "java21"
   description = ""
   timeout     = 15
+
+  tracing_config {
+    mode = "Active"
+  }
 
   # Enable SnapStart for Java functions. SnapStart is applied to published versions.
   snap_start {

@@ -31,33 +31,33 @@ resource "aws_dynamodb_table" "user_metadata" {
 resource "aws_dynamodb_table" "rankings" {
   name         = "${local.name}-rankings"
   billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "restaurantId"  # Primary partition key
+  hash_key     = "restaurantId" # Primary partition key
   range_key    = "identifier"   # Primary sort key
 
   deletion_protection_enabled = true
 
   # Reviews for account
   global_secondary_index {
-    name               = "accountId-time-index"
-    hash_key           = "accountId"
-    range_key          = "isoDateTime"
-    projection_type    = "ALL"
+    name            = "accountId-time-index"
+    hash_key        = "accountId"
+    range_key       = "isoDateTime"
+    projection_type = "ALL"
   }
 
   # Reviews for restaurant
   global_secondary_index {
-    name               = "restaurantId-time-index"
-    hash_key           = "restaurantId"
-    range_key          = "isoDateTime"
-    projection_type    = "ALL"
+    name            = "restaurantId-time-index"
+    hash_key        = "restaurantId"
+    range_key       = "isoDateTime"
+    projection_type = "ALL"
   }
 
   # Recent reviews
   global_secondary_index {
-    name               = "recent-reviews-index"
-    hash_key           = "isReview"
-    range_key          = "isoDateTime"
-    projection_type    = "ALL"
+    name            = "recent-reviews-index"
+    hash_key        = "isReview"
+    range_key       = "isoDateTime"
+    projection_type = "ALL"
   }
 
   attribute {
@@ -88,7 +88,7 @@ resource "aws_dynamodb_table" "rankings" {
   point_in_time_recovery {
     enabled = true
   }
-  
+
   lifecycle {
     prevent_destroy = true
   }
@@ -115,7 +115,7 @@ data "aws_iam_policy_document" "dynamodb_access_policy_document" {
     ]
     resources = [
       aws_dynamodb_table.rankings.arn,
-      "${aws_dynamodb_table.rankings.arn}/index/*",  # This is for GSIs
+      "${aws_dynamodb_table.rankings.arn}/index/*", # This is for GSIs
       aws_dynamodb_table.user_metadata.arn
     ]
   }

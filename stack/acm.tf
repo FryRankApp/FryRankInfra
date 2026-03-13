@@ -23,8 +23,8 @@ resource "aws_acm_certificate" "prod" {
 resource "aws_acm_certificate_validation" "prod" {
   count = local.account_id == "832016013924" ? 1 : 0
 
-  provider                = aws.us_east_1
-  certificate_arn         = aws_acm_certificate.prod[0].arn
+  provider        = aws.us_east_1
+  certificate_arn = aws_acm_certificate.prod[0].arn
   validation_record_fqdns = [
     for dvo in aws_acm_certificate.prod[0].domain_validation_options : dvo.resource_record_name
   ]
@@ -61,8 +61,8 @@ resource "aws_acm_certificate" "beta" {
 resource "aws_acm_certificate_validation" "beta" {
   count = local.account_id == "390844755099" ? 1 : 0
 
-  provider                = aws.us_east_1
-  certificate_arn         = aws_acm_certificate.beta[0].arn
+  provider        = aws.us_east_1
+  certificate_arn = aws_acm_certificate.beta[0].arn
   validation_record_fqdns = [
     for dvo in aws_acm_certificate.beta[0].domain_validation_options : dvo.resource_record_name
   ]
