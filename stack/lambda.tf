@@ -43,6 +43,10 @@ locals {
     upsert_public_user_metadata = {
       name    = "upsertPublicUserMetadata",
       handler = "com.fryrank.handler.UpsertPublicUserMetadataHandler"
+    },
+    update_like_count = {
+      name    = "updateLikeCount",
+      handler = "com.fryrank.handler.UpdateLikeCountHandler"
     }
   }
 }
