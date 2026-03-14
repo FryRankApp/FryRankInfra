@@ -476,6 +476,82 @@
         }
       }
     },
+    "/api/reviews/like": {
+      "options": {
+        "summary": "CORS support",
+        "description": "Enable CORS by returning correct headers",
+        "tags": ["CORS"],
+        "responses": {
+          "200": {
+            "description": "Default response for CORS method",
+            "headers": {
+              "Access-Control-Allow-Origin": { "schema": { "type": "string" } },
+              "Access-Control-Allow-Methods": { "schema": { "type": "string" } },
+              "Access-Control-Allow-Headers": { "schema": { "type": "string" } }
+            },
+            "content": {}
+          }
+        },
+        "x-amazon-apigateway-integration": {
+          "type": "mock",
+          "requestTemplates": { "application/json": "{\n \"statusCode\": 200\n}" },
+          "responses": {
+            "default": {
+              "statusCode": "200",
+              "responseParameters": {
+                "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                "method.response.header.Access-Control-Allow-Methods": "'GET,PUT,POST,OPTIONS'",
+                "method.response.header.Access-Control-Allow-Origin": "'*'"
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["review-controller"],
+        "operationId": "updateLikeCount",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "reviewId": { "type": "string" },
+                  "likeCount": { "type": "integer" }
+                },
+                "required": ["reviewId", "likeCount"]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "additionalProperties": { "type": "string" } }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": { "type": "object", "additionalProperties": { "type": "string" } }
+              }
+            }
+          },
+          "204": { "description": "No Content" }
+        },
+        "x-amazon-apigateway-integration": {
+          "httpMethod": "POST",
+          "payloadFormatVersion": "1.0",
+          "type": "AWS_PROXY",
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:updateLikeCount/invocations"
+        }
+      }
+    },
     "/api/reviews/recent": {
       "options": {
         "summary": "CORS support",
