@@ -90,6 +90,15 @@ set "TF_VAR_cloudfront_web_acl_arn=%WEB_ACL_ARN%"
 
 echo TF_VAR_cloudfront_web_acl_arn=%WEB_ACL_ARN%
 
+if /i "%TF_ACTION%"=="apply" (
+    if exist ".terraform" (
+        if exist "scripts\\import_lambda_aliases.py" (
+            echo Importing existing Lambda live aliases if needed...
+            python scripts\\import_lambda_aliases.py
+        )
+    )
+)
+
 echo Running terraform %TF_ACTION% %TF_EXTRA_ARGS%...
 terraform %TF_ACTION% %TF_EXTRA_ARGS%
 

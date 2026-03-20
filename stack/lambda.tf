@@ -131,7 +131,7 @@ resource "aws_lambda_permission" "fryrank_api_lambda_permission" {
   for_each      = local.create_lambdas_flag ? local.lambda_functions : {}
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.fryrank_api_lambdas[each.key].function_name
-  qualifier     = "live"
+  qualifier     = aws_lambda_alias.fryrank_api_lambdas_live[each.key].name
   principal     = "apigateway.amazonaws.com"
 
   # The /* part allows invocation from any stage, method and resource path
@@ -139,7 +139,7 @@ resource "aws_lambda_permission" "fryrank_api_lambda_permission" {
   source_arn = "${aws_api_gateway_rest_api.fryrank_api.execution_arn}/*"
 
   # Explicitly depend on the Lambda function being created first
-  depends_on = [aws_lambda_function.fryrank_api_lambdas]
+  depends_on = [aws_lambda_alias.fryrank_api_lambdas_live]
 }
 
 
@@ -162,6 +162,7 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
 
   runtime     = "java21"
   description = ""
+  publish     = true
   timeout     = 29
   memory_size = 1024
 
@@ -181,4 +182,11 @@ resource "aws_lambda_function" "fryrank_api_lambdas" {
       "SSM_DISABLE_AUTH_PARAMETER_KEY"     = "DISABLE_AUTH"
     }
   }
+}
+
+resource "aws_lambda_alias" "fryrank_api_lambdas_live" {
+  for_each         = aws_lambda_function.fryrank_api_lambdas
+  name             = "live"
+  function_name    = each.value.function_name
+  function_version = each.value.version
 }

@@ -45,6 +45,10 @@ jobs:
       - name: "Terraform Init"
         run: "terraform init -backend-config=backend.hcl"
 
+      - name: "Import existing Lambda live aliases"
+        run: |
+          python3 scripts/import_lambda_aliases.py
+
       - name: "Discover CloudFront Web ACL (beta)"
         run: |
           set -euo pipefail
@@ -120,6 +124,10 @@ jobs:
 
       - name: "Terraform Init"
         run: "terraform init -backend-config=backend.hcl"
+
+      - name: "Import existing Lambda live aliases"
+        run: |
+          python3 scripts/import_lambda_aliases.py
 
       - name: "Discover CloudFront Web ACL (prod)"
         run: |
