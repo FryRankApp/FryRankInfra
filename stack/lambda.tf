@@ -5,6 +5,7 @@ variable "create_lambdas" {
 }
 
 locals {
+  lambda_alias_name = "live"
   # If the top-level variable `create_lambdas` is defined elsewhere this will
   # use that value. If it's not defined, default to false to avoid trying to
   # create Lambda functions when the S3 object isn't present.
