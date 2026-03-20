@@ -26,7 +26,7 @@ resource "aws_api_gateway_stage" "fryrank_api_v1" {
   stage_name    = "v1"
 
   variables = {
-    lambdaAlias = "live"
+    lambdaAlias = local.lambda_alias_name
   }
 
 }
