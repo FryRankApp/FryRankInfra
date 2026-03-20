@@ -90,5 +90,19 @@ export TF_VAR_cloudfront_web_acl_arn="${WEB_ACL_ARN}"
 
 echo "TF_VAR_cloudfront_web_acl_arn=${WEB_ACL_ARN}"
 
+if [[ "${ACTION}" == "apply" ]]; then
+    # If the "live" Lambda aliases already exist (common in shared environments),
+    # Terraform needs them in state before it can update them to point at newly
+    # published versions.
+    if [[ -d .terraform ]] && [[ -f scripts/import_lambda_aliases.py ]]; then
+        echo "Importing existing Lambda live aliases (if needed)..."
+        if command -v python3 >/dev/null 2>&1; then
+            python3 scripts/import_lambda_aliases.py
+        else
+            python scripts/import_lambda_aliases.py
+        fi
+    fi
+fi
+
 echo "Running terraform ${ACTION}..."
 terraform "${ACTION}" "${TERRAFORM_ARGS[@]}"
