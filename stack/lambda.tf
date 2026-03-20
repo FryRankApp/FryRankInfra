@@ -132,7 +132,7 @@ resource "aws_lambda_permission" "fryrank_api_lambda_permission" {
   for_each      = local.create_lambdas_flag ? local.lambda_functions : {}
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.fryrank_api_lambdas[each.key].function_name
-  qualifier     = local.lambda_alias_name
+  qualifier     = "live"
   principal     = "apigateway.amazonaws.com"
 
   # The /* part allows invocation from any stage, method and resource path
