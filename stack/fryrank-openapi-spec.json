@@ -115,7 +115,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getPublicUserMetadata/invocations"
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getPublicUserMetadata:${stageVariables.lambdaAlias}/invocations"
         }
       },
       "put": {
@@ -183,7 +183,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:putPublicUserMetadata/invocations"
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:putPublicUserMetadata:${stageVariables.lambdaAlias}/invocations"
         }
       },
       "post": {
@@ -243,7 +243,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:upsertPublicUserMetadata/invocations"
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:upsertPublicUserMetadata:${stageVariables.lambdaAlias}/invocations"
         }
       }
     },
@@ -359,7 +359,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getAllReviews/invocations"
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getAllReviews:${stageVariables.lambdaAlias}/invocations"
         }
       },
       "post": {
@@ -419,7 +419,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:addNewReview/invocations"
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:addNewReview:${stageVariables.lambdaAlias}/invocations"
         }
       },
       "delete": {
@@ -472,7 +472,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:deleteReview/invocations"
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:deleteReview:${stageVariables.lambdaAlias}/invocations"
         }
       }
     },
@@ -581,7 +581,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getRecentReviews/invocations"
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getRecentReviews:${stageVariables.lambdaAlias}/invocations"
         }
       }
     },
@@ -698,7 +698,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getAggregateReviewInformation/invocations"
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:getAggregateReviewInformation:${stageVariables.lambdaAlias}/invocations"
         }
       }
     }

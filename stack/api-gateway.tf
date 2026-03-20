@@ -24,6 +24,11 @@ resource "aws_api_gateway_stage" "fryrank_api_v1" {
   deployment_id = aws_api_gateway_deployment.fryrank_api.id
   rest_api_id   = aws_api_gateway_rest_api.fryrank_api.id
   stage_name    = "v1"
+
+  variables = {
+    lambdaAlias = "live"
+  }
+
 }
 
 resource "aws_api_gateway_usage_plan" "fryrank_api_usage_plan" {
