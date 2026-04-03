@@ -101,6 +101,41 @@ resource "aws_dynamodb_table" "rankings" {
   )
 }
 
+# Per-user reaction state (thumbs up / down / heart) keyed by viewer + review
+resource "aws_dynamodb_table" "reactions" {
+  name         = "${local.name}-reactions"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "viewerAccountId"
+  range_key    = "reviewId"
+
+  deletion_protection_enabled = true
+
+  attribute {
+    name = "viewerAccountId"
+    type = "S"
+  }
+
+  attribute {
+    name = "reviewId"
+    type = "S"
+  }
+
+  point_in_time_recovery {
+    enabled = true
+  }
+
+  lifecycle {
+    prevent_destroy = true
+  }
+
+  tags = merge(
+    local.tags,
+    {
+      Description = "DynamoDB table for per-user review reactions"
+    }
+  )
+}
+
 data "aws_iam_policy_document" "dynamodb_access_policy_document" {
   statement {
     actions = [
@@ -111,12 +146,16 @@ data "aws_iam_policy_document" "dynamodb_access_policy_document" {
       "dynamodb:Query",
       "dynamodb:Scan",
       "dynamodb:BatchGetItem",
-      "dynamodb:BatchWriteItem"
+      "dynamodb:BatchWriteItem",
+      "dynamodb:TransactWriteItems",
+      "dynamodb:TransactGetItems"
     ]
     resources = [
       aws_dynamodb_table.rankings.arn,
       "${aws_dynamodb_table.rankings.arn}/index/*", # This is for GSIs
-      aws_dynamodb_table.user_metadata.arn
+      aws_dynamodb_table.user_metadata.arn,
+      aws_dynamodb_table.reactions.arn,
+      "${aws_dynamodb_table.reactions.arn}/index/*"
     ]
   }
 }
