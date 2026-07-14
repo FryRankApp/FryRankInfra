@@ -527,7 +527,7 @@
         "tags": [
           "review-controller"
         ],
-        "operationId": "toggleReaction",
+        "operationId": "putReaction",
         "requestBody": {
           "content": {
             "application/json": {
@@ -585,7 +585,7 @@
           "httpMethod": "POST",
           "payloadFormatVersion": "1.0",
           "type": "AWS_PROXY",
-          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:toggleReaction:live/invocations"
+          "uri": "arn:aws:apigateway:us-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:us-west-2:390844755099:function:putReaction:live/invocations"
         }
       }
     },

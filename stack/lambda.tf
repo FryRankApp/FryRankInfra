@@ -16,8 +16,8 @@ locals {
       name    = "getAllReviews",
       handler = "com.fryrank.handler.GetAllReviewsHandler"
     },
-    toggle_reaction = {
-      name    = "toggleReaction",
+    put_reaction = {
+      name    = "putReaction",
       handler = "com.fryrank.handler.PutReactionHandler"
     },
     add_new_review = {
