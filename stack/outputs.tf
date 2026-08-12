@@ -40,3 +40,13 @@ output "user_metadata_table_arn" {
   description = "The ARN of the user metadata DynamoDB table"
   value       = aws_dynamodb_table.user_metadata.arn
 }
+
+output "reactions_table_name" {
+  description = "The name of the reactions DynamoDB table"
+  value       = aws_dynamodb_table.reactions.name
+}
+
+output "reactions_table_arn" {
+  description = "The ARN of the reactions DynamoDB table"
+  value       = aws_dynamodb_table.reactions.arn
+}

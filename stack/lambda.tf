@@ -16,6 +16,10 @@ locals {
       name    = "getAllReviews",
       handler = "com.fryrank.handler.GetAllReviewsHandler"
     },
+    put_reaction = {
+      name    = "putReaction",
+      handler = "com.fryrank.handler.PutReactionHandler"
+    },
     add_new_review = {
       name    = "addNewReview",
       handler = "com.fryrank.handler.AddNewReviewForRestaurantHandler"
